@@ -63,6 +63,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     boolean timeFlag,dateFlag=false;
     Calendar calendar;
 
+    Button addTripBtn;
+
     TextInputEditText tripName;
 
     View expendedCard;
@@ -84,6 +86,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     String currentUserUID;
     String currentUserName;
     private FirebaseUser firebaseUser;
+
+    TripLocation startLocation,endLocation;
 
     private static final String TAG = "PlaceAutocomplete";
 
@@ -108,7 +112,10 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         Toolbar toolbar=findViewById(R.id.toolbarID);
         setSupportActionBar(toolbar);
 
+        mFirebaseDatabase=FirebaseDatabase.getInstance();
+        mDatabase=mFirebaseDatabase.getReference("Trips");
         tripName=findViewById(R.id.editTextTripName);
+        addTripBtn=findViewById(R.id.Button_OK);
 
         presenter = new AddTripPresenter(this);
         calendar=Calendar.getInstance();
@@ -161,6 +168,24 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             }
         });
 
+        addTripBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(timeFlag&&dateFlag==true)
+                    startAlarm(calendar);
+
+                String a=endLocation.getPointName();
+                String b=startLocation.getPointName();
+                String c=note.getNoteTitle();
+
+                addNewTrip(tripName.getText().toString(),startLocation,endLocation,calendar,note);
+
+
+
+            }
+        });
+
 
         // Creating a database object
         mFirebaseDatabase= FirebaseDatabase.getInstance( );
@@ -204,12 +229,13 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 if(place_autocomplete_fragment == R.id.place_autocomplete_fragment_from)
                 {
                     //start Point
-                    place.getLatLng();
+                    startLocation=new TripLocation(place.getName(),place.getLatLng());
 
                 }
                 else
                 {
                     //end Point
+                    endLocation=new TripLocation(place.getName(),place.getLatLng());
                 }
                 String placeName = place.getName();
                 Toast.makeText(AddTripActivity.this, placeName, Toast.LENGTH_SHORT).show();
@@ -224,9 +250,9 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         });
 
     }
-    private void addNewTrip(String tripName, TripLocation startLocation, TripLocation endLocation, Date tripDate , Note tripNote)
+    void addNewTrip(String tripName, TripLocation startLocation, TripLocation endLocation, Calendar calendar , Note tripNote)
     {
-        Trip trip=new Trip(tripName,startLocation,endLocation,tripDate,tripNote);
+        Trip trip=new Trip(tripName,startLocation,endLocation,calendar,tripNote);
         mDatabase.child(mDatabase.push().getKey()).setValue(trip);
     }
 
@@ -238,8 +264,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
         timeFlag=true;
 
-        if(timeFlag&&dateFlag==true)
-            startAlarm(calendar);
+
 
         String currentTime= DateFormat.getTimeInstance(DateFormat.SHORT).format(calendar.getTime());
         timeTxt=findViewById(R.id.textView_Time);

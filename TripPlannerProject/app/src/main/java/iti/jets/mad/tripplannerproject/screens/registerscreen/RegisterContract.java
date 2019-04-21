@@ -20,7 +20,6 @@ public interface RegisterContract {
         void firebaseAuthWithGoogle(GoogleSignInAccount account);
         void updateMessage(String message);
         void activityResult(int requestCode, Intent data);
-        void getSharedPreferences();
         boolean validateEmail(String email);
         void updateErrorEmail(String message);
         boolean validatePassword(String password);

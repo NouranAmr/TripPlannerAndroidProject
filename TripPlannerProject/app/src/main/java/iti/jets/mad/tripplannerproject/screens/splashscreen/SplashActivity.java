@@ -9,10 +9,12 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.facebook.login.widget.LoginButton;
 
 import iti.jets.mad.tripplannerproject.R;
 import iti.jets.mad.tripplannerproject.model.services.UserSharedPerferences;
 import iti.jets.mad.tripplannerproject.screens.homescreen.HomeActivity;
+import iti.jets.mad.tripplannerproject.screens.loginscreen.LoginActivity;
 import iti.jets.mad.tripplannerproject.screens.registerscreen.RegisterActivity;
 
 
@@ -34,15 +36,16 @@ public class SplashActivity extends AppCompatActivity {
                /* Intent intent=new Intent(SplashActivity.this,RegisterActivity.class);
                 startActivity(intent);
                 finish();*/
-                UserSharedPerferences settings = new UserSharedPerferences();
-                boolean flag=settings.getSharedPreferences(SplashActivity.this);
-                   if(flag==true){
-
+                UserSharedPerferences sharedPref;
+                sharedPref = UserSharedPerferences.getInstance();
+                if (sharedPref.getISLogged_IN(SplashActivity.this)) {
                     startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                    finish();
                 }
-                else {
+                else{
                     Intent intent = new Intent(SplashActivity.this, RegisterActivity.class);
                     startActivity(intent);
+
                 }
             }
         },7000);

@@ -6,7 +6,9 @@ import android.content.SharedPreferences;
 import com.google.firebase.auth.FirebaseAuth;
 
 import iti.jets.mad.tripplannerproject.model.services.SignInWithFireBase;
+import iti.jets.mad.tripplannerproject.model.services.UserSharedPerferences;
 import iti.jets.mad.tripplannerproject.screens.homescreen.HomeActivity;
+import iti.jets.mad.tripplannerproject.screens.registerscreen.RegisterActivity;
 
 
 public class LoginPresenterImpl implements LoginContract.LoginPresenter {
@@ -30,11 +32,13 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
     public void login( String email,  String password) {
         signInWithFireBase= new SignInWithFireBase(email,password);
         boolean flag=signInWithFireBase.login();
-        if(flag==true) {
+        if(flag==false) {
 
             updateMessage("sign in Successfully");
             toHomeActivity();
-            sharedPreferences(email,password);
+            UserSharedPerferences sharedPref;
+            sharedPref = UserSharedPerferences.getInstance();
+            sharedPref.saveISLogged_IN(context, true);
             clearViewTxt();
 
         }

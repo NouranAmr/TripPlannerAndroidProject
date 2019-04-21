@@ -43,10 +43,12 @@ public class SignUpWithFireBase {
                                                if(task.isSuccessful())
                                                {
                                                   flag=true;
+                                                   Log.i(TAG,task.getResult().toString());
                                                }
                                                else
                                                {
                                                   flag=false;
+                                                   Log.i(TAG,task.getResult().toString());
                                                }
 
                                            }

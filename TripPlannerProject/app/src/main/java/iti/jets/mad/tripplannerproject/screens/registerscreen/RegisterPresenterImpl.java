@@ -33,32 +33,27 @@ public class RegisterPresenterImpl implements RegisterContract.RegisterPresenter
     private static final int RC_SIGN_IN =9001 ;
     private RegisterContract.RegisterView registerView;
     private static final String TAG = "RegisterActivity";
-    private FirebaseAuth firebaseAuth;
+
     private Context context;
-    private static final String SETTING_INFOS = "User_Info";
-    private static final String EMAIL = "Email";
-    private static final String PASSWORD = "PASSWORD";
-    private SharedPreferences settings;
     private SignUpWithFireBase signUpWithFireBase;
-    private UserSharedPerferences userSharedPerferences;
-    private GoogleSignInClient mGoogleSignInClient;
 
     public RegisterPresenterImpl(RegisterContract.RegisterView registerView) {
         this.registerView = registerView;
-        firebaseAuth=FirebaseAuth.getInstance();
         context= (Context) registerView;
-        signUpWithFireBase=new SignUpWithFireBase(context);
+        //signUpWithFireBase=new SignUpWithFireBase(context);
     }
 
     @Override
-    public void register( String password,  String email) {
+    public void register( String email,  String password) {
+        signUpWithFireBase=new SignUpWithFireBase(context);
         boolean flag=signUpWithFireBase.register(email,password);
         if(flag==false)
         {
             updateMessage("Registered Successfully");
             toHomeActivity();
-            userSharedPerferences=new UserSharedPerferences();
-            userSharedPerferences.sharedPreferences(email,password,false,context);
+            UserSharedPerferences sharedPref;
+            sharedPref = UserSharedPerferences.getInstance();
+            sharedPref.saveISLogged_IN(context, true);
 
         }
         else
@@ -103,10 +98,6 @@ public class RegisterPresenterImpl implements RegisterContract.RegisterPresenter
     signUpWithFireBase.activityResult(requestCode,data,(Activity)registerView);
     }
 
-    @Override
-    public void getSharedPreferences() {
-       userSharedPerferences.getSharedPreferences(context);
-    }
 
     @Override
     public boolean validateEmail(String email) {

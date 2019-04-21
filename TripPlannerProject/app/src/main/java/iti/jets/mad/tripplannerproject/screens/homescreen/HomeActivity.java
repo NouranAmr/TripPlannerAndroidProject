@@ -1,6 +1,7 @@
 package iti.jets.mad.tripplannerproject.screens.homescreen;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.se.omapi.Session;
 import android.support.annotation.NonNull;
@@ -28,10 +29,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import iti.jets.mad.tripplannerproject.R;
+import iti.jets.mad.tripplannerproject.model.services.UserSharedPerferences;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.AddTripActivity;
 import iti.jets.mad.tripplannerproject.screens.homescreen.historyfragment.HistoryFragment;
 import iti.jets.mad.tripplannerproject.screens.homescreen.homefragment.HomeFragment;
 import iti.jets.mad.tripplannerproject.screens.homescreen.profilefragment.ProfileFragment;
+import iti.jets.mad.tripplannerproject.screens.loginscreen.LoginActivity;
 import iti.jets.mad.tripplannerproject.screens.registerscreen.RegisterActivity;
 import iti.jets.mad.tripplannerproject.screens.splashscreen.SplashActivity;
 
@@ -40,9 +43,15 @@ public class HomeActivity extends AppCompatActivity {
     private MenuItem logoutitem;
     private FloatingActionButton floatingActionButton;
     private GoogleApiClient mGoogleApiClient;
+    private static final String SETTING_INFOS = "User_Info";
+    private static final String EMAIL = "Email";
+    private static final String PASSWORD = "PASSWORD";
+    private SharedPreferences settings;
+    UserSharedPerferences sharedPref;
 
     public HomeActivity() {
 
+        sharedPref = UserSharedPerferences.getInstance();
     }
 
     @Override
@@ -100,19 +109,25 @@ public class HomeActivity extends AppCompatActivity {
         switch (id){
             case R.id.LogoutToolBarID: {
                 FirebaseAuth.getInstance().signOut();
-                // LoginManager.getInstance().logOut();
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(Status status) {
+                sharedPref.saveISLogged_IN(HomeActivity.this, false);
+                Intent i=new Intent(getApplicationContext(), SplashActivity.class);
+                startActivity(i);
 
-                                mGoogleApiClient.disconnect();
-                                Toast.makeText(getApplicationContext(),"Logged Out",Toast.LENGTH_SHORT).show();
-                                Intent i=new Intent(getApplicationContext(), SplashActivity.class);
-                                startActivity(i);
-                            }
-                        });
-                finish();
+                // LoginManager.getInstance().logOut();
+                if(mGoogleApiClient!=null) {
+                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                            new ResultCallback<Status>() {
+                                @Override
+                                public void onResult(Status status) {
+
+                                    //mGoogleApiClient.disconnect();
+                                    Toast.makeText(getApplicationContext(), "Logged Out", Toast.LENGTH_SHORT).show();
+                                    Intent i = new Intent(getApplicationContext(), SplashActivity.class);
+                                    startActivity(i);
+                                }
+                            });
+                    finish();
+                }
                 //startActivity(new Intent(this, RegisterActivity.class).putExtra("flag",true));
                 return true;
             }

@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">TripPlanner</string>
+    <string name="Logout">Logout</string>
+    <string name="startPoint">Start Point</string>
+    <string name="endPoint">End Point</string>
+    <string name="Start">Start</string>
+    <string name="Edit">Edit</string>
+    <string name="Delete">Delete</string>
+    <string name="Notes">Notes</string>
+</resources>

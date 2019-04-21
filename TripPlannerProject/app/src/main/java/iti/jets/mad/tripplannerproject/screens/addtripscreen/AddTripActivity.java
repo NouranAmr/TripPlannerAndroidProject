@@ -48,6 +48,7 @@ import java.util.Date;
 import iti.jets.mad.tripplannerproject.R;
 import iti.jets.mad.tripplannerproject.model.Note;
 import iti.jets.mad.tripplannerproject.model.Trip;
+import iti.jets.mad.tripplannerproject.model.TripLocation;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.alarmbroadcast.AlertReciever;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.datepicker.DatePickerFragment;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.datepicker.TimePickerFragment;
@@ -216,9 +217,9 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         });
 
     }
-    private void addNewTrip(String tripName, String startPoint, String endPoint, Date tripDate , Note tripNote)
+    private void addNewTrip(String tripName, TripLocation startLocation, TripLocation endLocation, Date tripDate , Note tripNote)
     {
-        Trip trip=new Trip(tripName,startPoint,endPoint,tripDate,tripNote);
+        Trip trip=new Trip(tripName,startLocation,endLocation,tripDate,tripNote);
         mDatabase.child(mDatabase.push().getKey()).setValue(trip);
     }
 

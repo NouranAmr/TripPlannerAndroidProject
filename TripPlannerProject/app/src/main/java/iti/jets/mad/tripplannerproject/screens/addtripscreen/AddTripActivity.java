@@ -1,11 +1,26 @@
 package iti.jets.mad.tripplannerproject.screens.addtripscreen;
 
+import android.app.AlarmManager;
+import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.DatePicker;
+import android.widget.ImageButton;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
@@ -18,23 +33,29 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import iti.jets.mad.tripplannerproject.R;
 import iti.jets.mad.tripplannerproject.model.Note;
 import iti.jets.mad.tripplannerproject.model.Trip;
+import iti.jets.mad.tripplannerproject.screens.addtripscreen.alarmbroadcast.AlertReciever;
+import iti.jets.mad.tripplannerproject.screens.addtripscreen.datepicker.DatePickerFragment;
+import iti.jets.mad.tripplannerproject.screens.addtripscreen.datepicker.TimePickerFragment;
 
 
-public class AddTripActivity extends AppCompatActivity implements AddTripContract.IView {
+public class AddTripActivity extends AppCompatActivity implements AddTripContract.IView  , TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
 
+    ImageButton btnTime,btnDate;
+    TextView timeTxt,dateTxt;
+    boolean timeFlag,dateFlag=false;
+    Calendar calendar;
+
+    View expendedCard;
+    Switch aSwitch;
     private MenuItem logoutitem;
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu,menu);
-        logoutitem=menu.findItem(R.id.LogoutToolBarID);
 
-        return true;
-    }
 
     // The Entry point of the database
     private FirebaseDatabase mFirebaseDatabase;
@@ -49,11 +70,55 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private static final String TAG = "PlaceAutocomplete";
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu,menu);
+        logoutitem=menu.findItem(R.id.LogoutToolBarID);
+
+        return true;
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_trip);
         Toolbar toolbar=findViewById(R.id.toolbarID);
         setSupportActionBar(toolbar);
+
+        calendar=Calendar.getInstance();
+        btnDate=findViewById(R.id.dateBtnID);
+        btnTime=findViewById(R.id.TimebtnID);
+        expendedCard=findViewById(R.id.expendedCard);
+        aSwitch = (Switch) findViewById(R.id.switch1);
+        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // The toggle is enabled
+                    expendedCard.setVisibility(View.VISIBLE);
+
+                } else {
+                    // The toggle is disabled
+                    expendedCard.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        btnTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment timeFragment=new TimePickerFragment();
+                timeFragment.show(getSupportFragmentManager(),"Time Picker");
+            }
+        });
+
+        btnDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment dateFragment=new DatePickerFragment();
+                dateFragment.show(getSupportFragmentManager(),"Date Picker");
+            }
+        });
+
 
         // Creating a database object
         mFirebaseDatabase= FirebaseDatabase.getInstance( );
@@ -109,6 +174,43 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     {
         Trip trip=new Trip(tripName,startPoint,endPoint,tripDate,tripNote);
         mDatabase.child(mDatabase.push().getKey()).setValue(trip);
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        calendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
+        calendar.set(Calendar.MINUTE,minute);
+        calendar.set(Calendar.SECOND,0);
+
+        timeFlag=true;
+
+        if(timeFlag&&dateFlag==true)
+            startAlarm(calendar);
+
+        String currentTime= DateFormat.getTimeInstance(DateFormat.SHORT).format(calendar.getTime());
+        timeTxt=findViewById(R.id.textView_Time);
+        timeTxt.setText(currentTime);
+    }
+    private void startAlarm(Calendar calendar) {
+        AlarmManager alarmManager =(AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        AlertReciever alertReciever= new AlertReciever();
+        Intent intent=new Intent(this,AlertReciever.class);
+        PendingIntent pendingIntent=PendingIntent.getBroadcast(this,1,intent,0);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+        }
+    }
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+        dateFlag=true;
+        calendar.set(Calendar.YEAR,year);
+        calendar.set(Calendar.MONTH,month);
+        calendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+        String currentDate= DateFormat.getDateInstance().format(calendar.getTime());
+        dateTxt=findViewById(R.id.textView_Calender);
+        dateTxt.setText(currentDate);
     }
 
 }

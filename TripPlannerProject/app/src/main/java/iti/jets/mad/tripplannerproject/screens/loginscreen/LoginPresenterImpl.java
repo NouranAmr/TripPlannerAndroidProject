@@ -32,7 +32,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
     public void login( String email,  String password) {
         signInWithFireBase= new SignInWithFireBase(email,password);
         boolean flag=signInWithFireBase.login();
-        if(flag==true) {
+        if(flag==false) {
 
             updateMessage("sign in Successfully");
             toHomeActivity();

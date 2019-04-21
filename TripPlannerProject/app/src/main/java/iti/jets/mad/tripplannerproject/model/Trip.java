@@ -4,14 +4,16 @@ import java.util.Date;
 
 public class Trip {
 
-    private String tripName,startPoint, endPoint;
+    private String tripName;
     private Date tripDate;
     private Note tripNote;
+    private String markerColor;
+    private TripLocation startLocation, endLocation;
 
-    public Trip(String tripName, String startPoint, String endPoint, Date tripDate , Note tripNote) {
+    public Trip(String tripName, TripLocation startLocation,TripLocation endLocation, Date tripDate , Note tripNote) {
         this.tripName = tripName;
-        this.startPoint = startPoint;
-        this.endPoint = endPoint;
+        this.startLocation = startLocation;
+        this.endLocation = endLocation;
         this.tripDate = tripDate;
         this.tripNote=tripNote;
     }
@@ -25,22 +27,6 @@ public class Trip {
 
     public void setTripName(String tripName) {
         this.tripName = tripName;
-    }
-
-    public String getStartPoint() {
-        return startPoint;
-    }
-
-    public void setStartPoint(String startPoint) {
-        this.startPoint = startPoint;
-    }
-
-    public String getEndPoint() {
-        return endPoint;
-    }
-
-    public void setEndPoint(String endPoint) {
-        this.endPoint = endPoint;
     }
 
     public Date getTripDate() {
@@ -57,6 +43,30 @@ public class Trip {
 
     public void setTripNote(Note tripNote) {
         this.tripNote = tripNote;
+    }
+
+    public TripLocation getStartLocation() {
+        return startLocation;
+    }
+
+    public void setStartLocation(TripLocation startLocation) {
+        this.startLocation = startLocation;
+    }
+
+    public TripLocation getEndLocation() {
+        return endLocation;
+    }
+
+    public void setEndLocation(TripLocation endLocation) {
+        this.endLocation = endLocation;
+    }
+
+    public String getMarkerColor() {
+        return markerColor;
+    }
+
+    public void setMarkerColor(String markerColor) {
+        this.markerColor = markerColor;
     }
 
     @Override

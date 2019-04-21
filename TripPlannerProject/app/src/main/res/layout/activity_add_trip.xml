@@ -54,6 +54,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <android.support.design.widget.TextInputEditText
+                            android:id="@+id/editTextTripName"
                             android:layout_width="match_parent"
                             android:layout_height="55dp"
                             android:background="@drawable/rounded_corner"
@@ -396,6 +397,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <android.support.design.widget.TextInputEditText
+                            android:id="@+id/editTextNote"
                             android:layout_width="match_parent"
                             android:layout_height="55dp"
                             android:background="@drawable/rounded_corner"

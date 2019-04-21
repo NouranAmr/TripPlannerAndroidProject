@@ -10,13 +10,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -36,6 +40,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -50,6 +55,7 @@ import iti.jets.mad.tripplannerproject.screens.addtripscreen.datepicker.TimePick
 
 public class AddTripActivity extends AppCompatActivity implements AddTripContract.IView  , TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
 
+    AddTripContract.IPresnter presenter;
     ImageButton btnTime,btnDate;
     TextView timeTxt,dateTxt;
     boolean timeFlag,dateFlag=false;
@@ -59,7 +65,12 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     Switch aSwitch;
     private MenuItem logoutitem;
 
-
+    private RecyclerView notesRecyclerView;
+    private Note note ;
+    private EditText editTextNote;
+    private EditText editTextTripName;
+    private Button buttonAddNote;
+    private ArrayList<String> notes;
     // The Entry point of the database
     private FirebaseDatabase mFirebaseDatabase;
     // [START declare_database_ref]
@@ -71,6 +82,11 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private FirebaseUser firebaseUser;
 
     private static final String TAG = "PlaceAutocomplete";
+
+    public AddTripActivity() {
+        note = new Note();
+        notes=new ArrayList<>();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,10 +104,18 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         Toolbar toolbar=findViewById(R.id.toolbarID);
         setSupportActionBar(toolbar);
 
+        presenter = new AddTripPresenter(this);
         calendar=Calendar.getInstance();
         btnDate=findViewById(R.id.dateBtnID);
         btnTime=findViewById(R.id.TimebtnID);
         expendedCard=findViewById(R.id.expendedCard);
+        notesRecyclerView = findViewById(R.id.recyclerViewNots);
+        notesRecyclerView.setLayoutManager(new LinearLayoutManager(AddTripActivity.this));
+        editTextTripName = findViewById(R.id.editTextTripName);
+        editTextNote = findViewById(R.id.editTextNote);
+        buttonAddNote = findViewById(R.id.buttonAddNote);
+        editTextNote.setText("");
+        note.setNoteTitle(editTextTripName.getText().toString());
         aSwitch = (Switch) findViewById(R.id.switch1);
         aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -103,6 +127,15 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                     // The toggle is disabled
                     expendedCard.setVisibility(View.GONE);
                 }
+            }
+        });
+
+        buttonAddNote.setOnClickListener(v->{
+            if(!editTextNote.getText().toString().equals(""))
+            {
+                notes.add(editTextNote.getText().toString());
+                editTextNote.setText("");
+                presenter.setNotes(notes);
             }
         });
 
@@ -226,4 +259,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         dateTxt.setText(currentDate);
     }
 
+    @Override
+    public void showNotes(NoteAdapter adapter) {
+        notesRecyclerView.setAdapter(adapter);
+    }
 }

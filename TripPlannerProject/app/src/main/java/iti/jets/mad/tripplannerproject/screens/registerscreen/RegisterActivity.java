@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.SignInButton;
 
 import iti.jets.mad.tripplannerproject.R;
+import iti.jets.mad.tripplannerproject.model.services.UserSharedPerferences;
 
 
 public class RegisterActivity extends AppCompatActivity implements RegisterContract.RegisterView{
@@ -57,6 +58,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
                 if(password.equals(repassword) && registerPresenter.validateEmail(email)&&registerPresenter.validatePassword(password)&&registerPresenter.validateUsername(name)) {
 
                     registerPresenter.register(password, email);
+
 
                 }
                 else if(!password.equals(repassword))

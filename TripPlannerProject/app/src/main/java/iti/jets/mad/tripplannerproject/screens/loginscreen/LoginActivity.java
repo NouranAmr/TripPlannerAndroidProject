@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import iti.jets.mad.tripplannerproject.R;
+import iti.jets.mad.tripplannerproject.model.services.UserSharedPerferences;
+import iti.jets.mad.tripplannerproject.screens.registerscreen.RegisterActivity;
 
 
 public class LoginActivity extends AppCompatActivity implements LoginContract.LoginView{
@@ -31,6 +33,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
             @Override
             public void onClick(View v) {
                 loginPresenter.login(email.getText().toString().trim(),password.getText().toString());
+
 
             }
         });

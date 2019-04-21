@@ -57,8 +57,9 @@ public class RegisterPresenterImpl implements RegisterContract.RegisterPresenter
         {
             updateMessage("Registered Successfully");
             toHomeActivity();
-            userSharedPerferences=new UserSharedPerferences();
-            userSharedPerferences.sharedPreferences(email,password,false,context);
+            UserSharedPerferences sharedPref;
+            sharedPref = UserSharedPerferences.getInstance();
+            sharedPref.saveISLogged_IN(context, true);
 
         }
         else
@@ -103,10 +104,6 @@ public class RegisterPresenterImpl implements RegisterContract.RegisterPresenter
     signUpWithFireBase.activityResult(requestCode,data,(Activity)registerView);
     }
 
-    @Override
-    public void getSharedPreferences() {
-       userSharedPerferences.getSharedPreferences(context);
-    }
 
     @Override
     public boolean validateEmail(String email) {

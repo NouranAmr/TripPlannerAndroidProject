@@ -3,13 +3,15 @@ package iti.jets.mad.tripplannerproject.model.services;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import iti.jets.mad.tripplannerproject.model.User;
 import iti.jets.mad.tripplannerproject.screens.homescreen.HomeActivity;
 
 public class UserSharedPerferences {
 
-    private static final String SETTING_INFOS = "User_Info";
+   /* private static final String SETTING_INFOS = "User_Info";
     private static final String EMAIL = "Email";
     private static final String PASSWORD = "PASSWORD";
     private SharedPreferences settings;
@@ -42,5 +44,33 @@ public class UserSharedPerferences {
         else
             flag=false;
         return  flag;
+    }*/
+   SharedPreferences sharepreferences;
+
+    public static UserSharedPerferences instance = null;
+
+    public static UserSharedPerferences getInstance()
+    {
+
+        if (instance == null) {
+            synchronized (UserSharedPerferences.class) {
+                instance = new UserSharedPerferences();
+            }
+        }
+        return instance;
     }
+    public void saveISLogged_IN(Context context, Boolean isLoggedin) {
+        sharepreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharepreferences.edit();
+        editor.putBoolean("IS_LOGIN", isLoggedin);
+        editor.commit();
+    }
+
+    public boolean getISLogged_IN(Context context) {
+        sharepreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        return sharepreferences.getBoolean("IS_LOGIN", false);
+    }
+
 }

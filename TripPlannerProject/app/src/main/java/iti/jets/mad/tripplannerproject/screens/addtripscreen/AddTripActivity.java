@@ -24,16 +24,19 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -131,6 +134,10 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         // [END initialize_database_ref]
 
         /////place auto compleat/////
+        // Initialize Places.
+        Places.initialize(getApplicationContext(), "AIzaSyDWfuuXPaayWjdUpTv-kiQogKe65Y3qr8M");
+        PlacesClient placesClient = Places.createClient(AddTripActivity.this);
+
         // from
         initPlaceAutocomplete(R.id.place_autocomplete_fragment_from);
         // to
@@ -142,16 +149,19 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
     private void initPlaceAutocomplete(final int place_autocomplete_fragment)
     {
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(place_autocomplete_fragment);
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(place_autocomplete_fragment);
 
-        AutocompleteFilter filter = new AutocompleteFilter.Builder()
-                .setCountry("EG")
-                .build();
-        autocompleteFragment.setFilter(filter);
+        autocompleteFragment.setCountry("EG");
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+
+        // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                //Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
                 if(place_autocomplete_fragment == R.id.place_autocomplete_fragment_from)
                 {
                     //start Point
@@ -160,15 +170,18 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 {
                     //end Point
                 }
-                String placeName = place.getName().toString();
+                String placeName = place.getName();
                 Toast.makeText(AddTripActivity.this, placeName, Toast.LENGTH_SHORT).show();
             }
+
             @Override
             public void onError(Status status) {
+                // TODO: Handle the error.
                 Log.i(TAG, "An error occurred: " + status);
                 Toast.makeText(AddTripActivity.this, status.getStatus().toString(), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
     private void addNewTrip(String tripName, String startPoint, String endPoint, Date tripDate , Note tripNote)
     {

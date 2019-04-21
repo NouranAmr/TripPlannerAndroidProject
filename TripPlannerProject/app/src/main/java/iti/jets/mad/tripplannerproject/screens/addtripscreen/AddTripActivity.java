@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -61,6 +62,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     boolean timeFlag,dateFlag=false;
     Calendar calendar;
 
+    TextInputEditText tripName;
+
     View expendedCard;
     Switch aSwitch;
     private MenuItem logoutitem;
@@ -103,6 +106,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         setContentView(R.layout.activity_add_trip);
         Toolbar toolbar=findViewById(R.id.toolbarID);
         setSupportActionBar(toolbar);
+
+        tripName=findViewById(R.id.editTextTripName);
 
         presenter = new AddTripPresenter(this);
         calendar=Calendar.getInstance();
@@ -198,6 +203,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 if(place_autocomplete_fragment == R.id.place_autocomplete_fragment_from)
                 {
                     //start Point
+                    place.getLatLng();
+
                 }
                 else
                 {

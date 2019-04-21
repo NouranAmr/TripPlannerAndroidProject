@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Note {
     private String noteTitle;
     private ArrayList <String> notes;
+    private boolean isDone;
 
     public Note() {
     }
@@ -12,6 +13,7 @@ public class Note {
     public Note(String noteTitle, ArrayList<String> notes) {
         this.noteTitle = noteTitle;
         this.notes = notes;
+        this.isDone=false;
     }
 
     public String getNoteTitle() {
@@ -30,6 +32,13 @@ public class Note {
         this.notes = notes;
     }
 
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public void setDone(boolean done) {
+        isDone = done;
+    }
 
     @Override
     public String toString() {

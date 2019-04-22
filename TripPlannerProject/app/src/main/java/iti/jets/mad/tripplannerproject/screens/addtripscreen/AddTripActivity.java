@@ -44,7 +44,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.List;
 
 import iti.jets.mad.tripplannerproject.R;
 import iti.jets.mad.tripplannerproject.model.Note;
@@ -57,39 +57,34 @@ import iti.jets.mad.tripplannerproject.screens.addtripscreen.datepicker.TimePick
 
 public class AddTripActivity extends AppCompatActivity implements AddTripContract.IView  , TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
 
-    AddTripContract.IPresnter presenter;
-    ImageButton btnTime,btnDate;
-    TextView timeTxt,dateTxt;
-    boolean timeFlag,dateFlag=false;
-    Calendar calendar;
-
-    Button addTripBtn;
-
-    TextInputEditText tripName;
-
-    View expendedCard;
-    Switch aSwitch;
+    private AddTripContract.IPresnter presenter;
+    private ImageButton btnTime,btnDate;
+    private TextView timeTxt,dateTxt;
+    private boolean timeFlag,dateFlag=false;
+    private Calendar calendar;
+    private Button addTripBtn, buttonAddNote;
+    private TextInputEditText tripName;
+    private View expendedCard;
+    private Switch aSwitch;
     private MenuItem logoutitem;
-
     private RecyclerView notesRecyclerView;
     private Note note ;
     private EditText editTextNote;
     private EditText editTextTripName;
-    private Button buttonAddNote;
-    private ArrayList<String> notes;
+    private ArrayList<Note> notes;
     // The Entry point of the database
     private FirebaseDatabase mFirebaseDatabase;
     // [START declare_database_ref]
     private DatabaseReference mDatabase;
     // [END declare_database_ref]
 
-    String currentUserUID;
-    String currentUserName;
+    private String currentUserUID;
+    private String currentUserName;
     private FirebaseUser firebaseUser;
-
-    TripLocation startLocation,endLocation;
+    private TripLocation startLocation,endLocation;
 
     private static final String TAG = "PlaceAutocomplete";
+    private String userID;
 
     public AddTripActivity() {
         note = new Note();
@@ -112,8 +107,6 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         Toolbar toolbar=findViewById(R.id.toolbarID);
         setSupportActionBar(toolbar);
 
-        mFirebaseDatabase=FirebaseDatabase.getInstance();
-        mDatabase=mFirebaseDatabase.getReference("Trips");
         tripName=findViewById(R.id.editTextTripName);
         addTripBtn=findViewById(R.id.Button_OK);
 
@@ -127,8 +120,18 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         editTextTripName = findViewById(R.id.editTextTripName);
         editTextNote = findViewById(R.id.editTextNote);
         buttonAddNote = findViewById(R.id.buttonAddNote);
+        //get current user
+        firebaseUser =FirebaseAuth.getInstance().getCurrentUser();
+        userID=firebaseUser.getUid();
+        Log.e("currentUserUID",userID);
+        // database settings
+
+        mFirebaseDatabase=FirebaseDatabase.getInstance();
+        mDatabase=mFirebaseDatabase.getReference("Trips").child(userID);//get each user
+
         editTextNote.setText("");
         note.setNoteTitle(editTextTripName.getText().toString());
+
         aSwitch = (Switch) findViewById(R.id.switch1);
         aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -146,10 +149,12 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         buttonAddNote.setOnClickListener(v->{
             if(!editTextNote.getText().toString().equals(""))
             {
-                notes.add(editTextNote.getText().toString());
+                Note userNote= new Note(editTextNote.getText().toString());
+                notes.add(userNote);
                 editTextNote.setText("");
-                presenter.setNotes(notes);
+
             }
+            presenter.setNotes(notes);
         });
 
         btnTime.setOnClickListener(new View.OnClickListener() {
@@ -168,6 +173,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             }
         });
 
+
         addTripBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,7 +185,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 String b=startLocation.getPointName();
                 String c=note.getNoteTitle();
 
-                addNewTrip(tripName.getText().toString(),startLocation,endLocation,calendar,note);
+                saveTripToFireBaseDatabase(tripName.getText().toString(),startLocation,endLocation,calendar,notes);
 
 
 
@@ -187,13 +193,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         });
 
 
-        // Creating a database object
-        mFirebaseDatabase= FirebaseDatabase.getInstance( );
-        // [START initialize_database_ref]
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser(); //getcurrentuser
-        currentUserUID=firebaseUser.getUid();
 
-        Log.e("currentUserUID",currentUserUID);
         //mDatabase = mFirebaseDatabase.getReference().child("Trips").child(currentUserUID);
         // [END initialize_database_ref]
 
@@ -250,10 +250,23 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         });
 
     }
-    void addNewTrip(String tripName, TripLocation startLocation, TripLocation endLocation, Calendar calendar , Note tripNote)
-    {
-        Trip trip=new Trip(tripName,startLocation,endLocation,calendar,tripNote);
-        mDatabase.child(mDatabase.push().getKey()).setValue(trip);
+    public void saveTripToFireBaseDatabase(String tripName, TripLocation startLocation, TripLocation endLocation, Calendar calendar , ArrayList<Note> tripNote) {
+        if (!(tripName.equals("")) && !(startLocation.equals(null)) && !(endLocation.equals(null)) && !(calendar.equals(null)) && !(tripNote.size()==0)) {
+            writeNewTrip(tripName,startLocation,endLocation,calendar,tripNote);
+            Toast.makeText(AddTripActivity.this, "Note Saved", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public void writeNewTrip(String tripName, TripLocation startLocation, TripLocation endLocation, Calendar calendar , ArrayList<Note> tripNote) {
+
+
+        try {
+            Trip trip=new Trip(tripName,startLocation,endLocation,calendar.getTimeInMillis(),tripNote);
+
+
+            mDatabase.child(mDatabase.push().getKey()).setValue(trip);
+        }catch (Exception e){
+            String m = e.getMessage();
+        }
     }
 
     @Override

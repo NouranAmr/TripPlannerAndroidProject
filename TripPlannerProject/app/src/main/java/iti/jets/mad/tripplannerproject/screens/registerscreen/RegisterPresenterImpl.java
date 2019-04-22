@@ -40,7 +40,7 @@ public class RegisterPresenterImpl implements RegisterContract.RegisterPresenter
     public RegisterPresenterImpl(RegisterContract.RegisterView registerView) {
         this.registerView = registerView;
         context= (Context) registerView;
-        //signUpWithFireBase=new SignUpWithFireBase(context);
+        signUpWithFireBase=new SignUpWithFireBase(context);
     }
 
     @Override
@@ -93,7 +93,6 @@ public class RegisterPresenterImpl implements RegisterContract.RegisterPresenter
 
     @Override
     public void activityResult(int requestCode, Intent data) {
-
 
     signUpWithFireBase.activityResult(requestCode,data,(Activity)registerView);
     }

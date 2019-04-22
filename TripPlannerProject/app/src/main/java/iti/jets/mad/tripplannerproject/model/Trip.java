@@ -2,20 +2,21 @@ package iti.jets.mad.tripplannerproject.model;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class Trip {
 
     private String tripName;
-    Calendar calendar;
-    private Note tripNote;
+    long timeStamp;
+    private List<Note> tripNote;
     private String markerColor;
     private TripLocation startLocation, endLocation;
 
-    public Trip(String tripName, TripLocation startLocation,TripLocation endLocation, Calendar calendar , Note tripNote) {
+    public Trip(String tripName, TripLocation startLocation, TripLocation endLocation, long timeStamp , List<Note> tripNote) {
         this.tripName = tripName;
         this.startLocation = startLocation;
         this.endLocation = endLocation;
-        this.calendar=calendar;
+        this.timeStamp=timeStamp;
         this.tripNote=tripNote;
     }
 
@@ -30,20 +31,12 @@ public class Trip {
         this.tripName = tripName;
     }
 
-    public Calendar getCalendar() {
-        return calendar;
+    public long getTimeStamp() {
+        return timeStamp;
     }
 
-    public void setCalendar(Calendar calendar) {
-        this.calendar = calendar;
-    }
-
-    public Note getTripNote() {
-        return tripNote;
-    }
-
-    public void setTripNote(Note tripNote) {
-        this.tripNote = tripNote;
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public TripLocation getStartLocation() {
@@ -73,6 +66,14 @@ public class Trip {
     @Override
     public String toString() {
         return tripName;
+    }
+
+    public List<Note> getTripNote() {
+        return tripNote;
+    }
+
+    public void setTripNote(List<Note> tripNote) {
+        this.tripNote = tripNote;
     }
 }
 

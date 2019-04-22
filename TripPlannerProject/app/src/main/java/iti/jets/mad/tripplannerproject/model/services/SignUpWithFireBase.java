@@ -28,7 +28,7 @@ public class SignUpWithFireBase {
     private static final String TAG = "SignUpWithFireBase";
     private Context context;
     private boolean flag=false;
-    private static final int RC_SIGN_IN =9001 ;
+    private static final int RC_SIGN_IN =101 ;
 
     public SignUpWithFireBase(Context context) {
         firebaseAuth=FirebaseAuth.getInstance();
@@ -57,6 +57,12 @@ public class SignUpWithFireBase {
         return flag;
     }
     public Intent googleTooken() {
+        /*
+                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken()
+                .requestEmail()
+                .build();
+         */
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(context.getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -71,26 +77,36 @@ public class SignUpWithFireBase {
     public boolean firebaseAuthWithGoogle(GoogleSignInAccount account , Activity registerView) {
 
         flag=false;
+        AuthCredential credential;
         Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
-        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(registerView, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+       try {
+            credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+           firebaseAuth.signInWithCredential(credential)
+                   .addOnCompleteListener(registerView, new OnCompleteListener<AuthResult>() {
+                       @Override
+                       public void onComplete(@NonNull Task<AuthResult> task) {
+                           if (task.isSuccessful()) {
+                               // Sign in success, update UI with the signed-in user's information
 
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
-                            flag=true;
+                               FirebaseUser user = firebaseAuth.getCurrentUser();
+                               flag = true;
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            flag=false;
-                        }
+                           } else {
+                               // If sign in fails, display a message to the user.
+                               flag = false;
+                           }
 
-                    }
-                });
-        return flag;
+                       }
+                   });
+       }
+       catch (Exception e) {
+           String mes = e.getMessage();
+
+       }finally {
+
+       }
+       return flag;
+
     }
     public void activityResult(int requestCode, Intent data , Activity registerView ) {
 

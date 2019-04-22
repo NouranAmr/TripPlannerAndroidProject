@@ -4,15 +4,13 @@ import java.util.ArrayList;
 
 public class Note {
     private String noteTitle;
-    private ArrayList <String> notes;
     private boolean isDone;
 
     public Note() {
     }
 
-    public Note(String noteTitle, ArrayList<String> notes) {
+    public Note(String noteTitle) {
         this.noteTitle = noteTitle;
-        this.notes = notes;
         this.isDone=false;
     }
 
@@ -22,14 +20,6 @@ public class Note {
 
     public void setNoteTitle(String noteTitle) {
         this.noteTitle = noteTitle;
-    }
-
-    public ArrayList<String> getNotes() {
-        return notes;
-    }
-
-    public void setNotes(ArrayList<String> notes) {
-        this.notes = notes;
     }
 
     public boolean isDone() {

@@ -3,6 +3,9 @@ package iti.jets.mad.tripplannerproject.screens.addtripscreen;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import iti.jets.mad.tripplannerproject.model.Note;
 
 public class AddTripPresenter  implements AddTripContract.IPresnter {
 
@@ -14,8 +17,8 @@ public class AddTripPresenter  implements AddTripContract.IPresnter {
         noteAdapter = new NoteAdapter((Context) activity);
     }
     @Override
-    public void setNotes(ArrayList<String> notes) {
-        noteAdapter.setNotesList(notes);
+    public void setNotes(ArrayList<Note> note) {
+        noteAdapter.setNotesList(note);
         activity.showNotes(noteAdapter);
     }
 }

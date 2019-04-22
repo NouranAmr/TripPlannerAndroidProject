@@ -19,23 +19,23 @@ import iti.jets.mad.tripplannerproject.model.Note;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> {
     private Context context ;
-    private ArrayList<String> notesList;
+    private ArrayList<Note> notesList;
 
     public NoteAdapter(Context _context ) {
         notesList = new ArrayList<>();
         context=_context;
     }
 
-    public NoteAdapter(Context _context , ArrayList<String> _notesList){
+    public NoteAdapter(Context _context , ArrayList<Note> _notesList){
         context=_context;
         notesList=_notesList;
     }
 
-    public ArrayList<String> getNotesList() {
+    public ArrayList<Note> getNotesList() {
         return notesList;
     }
 
-    public void setNotesList(ArrayList<String> notesList) {
+    public void setNotesList(ArrayList<Note> notesList) {
         this.notesList = notesList;
     }
 
@@ -50,7 +50,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
     public void onBindViewHolder(@NonNull NoteAdapter.MyViewHolder myViewHolder, int i) {
 
         // Get the clicked item label
-        final String note = notesList.get(i);
+        final String note = notesList.get(i).getNoteTitle();
         myViewHolder.txtNote.setText(note);
         myViewHolder.deleteNote.setOnClickListener(e->{
 

@@ -4,15 +4,10 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class TripLocation {
     private String PointName;
-    private LatLng PointLatLng;
+    private double lat,lng;
 
     public TripLocation() {
-    }
-
-    public TripLocation(String pointName, LatLng pointLatLng) {
-        PointName = pointName;
-        PointLatLng = pointLatLng;
-    }
+   }
 
     public String getPointName() {
         return PointName;
@@ -22,11 +17,19 @@ public class TripLocation {
         PointName = pointName;
     }
 
-    public LatLng getPointLatLng() {
-        return PointLatLng;
+    public double getLat() {
+        return lat;
     }
 
-    public void setPointLatLng(LatLng pointLatLng) {
-        PointLatLng = pointLatLng;
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 }

@@ -29,6 +29,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -53,6 +54,7 @@ import iti.jets.mad.tripplannerproject.model.TripLocation;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.alarmbroadcast.AlertReciever;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.datepicker.DatePickerFragment;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.datepicker.TimePickerFragment;
+import iti.jets.mad.tripplannerproject.screens.homescreen.HomeActivity;
 
 
 public class AddTripActivity extends AppCompatActivity implements AddTripContract.IView  , TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
@@ -181,10 +183,6 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 if(timeFlag&&dateFlag==true)
                     startAlarm(calendar);
 
-                String a=endLocation.getPointName();
-                String b=startLocation.getPointName();
-                String c=note.getNoteTitle();
-
                 saveTripToFireBaseDatabase(tripName.getText().toString(),startLocation,endLocation,calendar,notes);
 
 
@@ -218,7 +216,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
         autocompleteFragment.setCountry("EG");
         // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG));
 
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -229,15 +227,24 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 if(place_autocomplete_fragment == R.id.place_autocomplete_fragment_from)
                 {
                     //start Point
-                    startLocation=new TripLocation(place.getName(),place.getLatLng());
+
+                    startLocation=new TripLocation();
+                    startLocation.setPointName(place.getName());
+                    startLocation.setLat(place.getLatLng().latitude);
+                    startLocation.setLng(place.getLatLng().longitude);
 
                 }
                 else
                 {
                     //end Point
-                    endLocation=new TripLocation(place.getName(),place.getLatLng());
+
+                    endLocation=new TripLocation();
+                    endLocation.setPointName(place.getName());
+                    endLocation.setLat(place.getLatLng().latitude);
+                    endLocation.setLng(place.getLatLng().longitude);
                 }
                 String placeName = place.getName();
+                LatLng latLng=place.getLatLng();
                 Toast.makeText(AddTripActivity.this, placeName, Toast.LENGTH_SHORT).show();
             }
 
@@ -253,7 +260,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     public void saveTripToFireBaseDatabase(String tripName, TripLocation startLocation, TripLocation endLocation, Calendar calendar , ArrayList<Note> tripNote) {
         if (!(tripName.equals("")) && !(startLocation.equals(null)) && !(endLocation.equals(null)) && !(calendar.equals(null)) && !(tripNote.size()==0)) {
             writeNewTrip(tripName,startLocation,endLocation,calendar,tripNote);
-            Toast.makeText(AddTripActivity.this, "Note Saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddTripActivity.this, "Trip Saved", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(AddTripActivity.this, HomeActivity.class));
         }
     }
     public void writeNewTrip(String tripName, TripLocation startLocation, TripLocation endLocation, Calendar calendar , ArrayList<Note> tripNote) {

@@ -55,7 +55,6 @@
                     android:layout_height="0dp"
                     android:layout_marginLeft="50dp"
                     android:layout_weight="1"
-                    android:text="Nouran"
                     android:textAlignment="center"
                     android:textColor="#000"
                     android:textSize="20sp" />
@@ -80,7 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:text="From"
+                    android:text="From: "
                     android:textAlignment="center"
                     android:textColor="#000"
                     android:textSize="20sp" />
@@ -90,7 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:text="To"
+                    android:text="To: "
                     android:textAlignment="center"
                     android:textColor="#000"
                     android:textSize="20sp" />
@@ -101,7 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:text="Date"
+                    android:text="Date: "
                     android:textAlignment="center"
                     android:textColor="#000"
                     android:textSize="20sp" />

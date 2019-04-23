@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import iti.jets.mad.tripplannerproject.R;
-import iti.jets.mad.tripplannerproject.screens.homescreen.historyfragment.upcomingfragment.RecyclerViewAdapter;
+import iti.jets.mad.tripplannerproject.model.services.RecyclerViewAdapter;
 
 
 public class HistoryFragment extends Fragment {
@@ -30,12 +30,12 @@ public class HistoryFragment extends Fragment {
 
         View view=inflater.inflate(R.layout.fragment_home,container,false);
 
-        RecyclerView recyclerView= view.findViewById(R.id.recycleView);
+       /* RecyclerView recyclerView= view.findViewById(R.id.recycleView);
         RecyclerViewAdapter recyclerViewAdapter= new RecyclerViewAdapter(getContext());
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-
+*/
         return view;
     }
 

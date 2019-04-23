@@ -1,8 +1,11 @@
 package iti.jets.mad.tripplannerproject.model;
 
+import java.security.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class Trip {
 
@@ -31,8 +34,20 @@ public class Trip {
         this.tripName = tripName;
     }
 
-    public long getTimeStamp() {
-        return timeStamp;
+    public String getDateTimeStamp() {
+        Date date=new Date(timeStamp);
+        SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
+        sdf2.setTimeZone(TimeZone.getTimeZone("UTC+2"));
+        String dateStr = sdf2.format(date);
+        return dateStr;
+    }
+
+    public String getTimeTimeStamp() {
+        Date date=new Date(timeStamp);
+        SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm:ss a");
+        sdf2.setTimeZone(TimeZone.getTimeZone("UTC+2"));
+        String timeStr = sdf2.format(date);
+        return timeStr;
     }
 
     public void setTimeStamp(long timeStamp) {
@@ -75,5 +90,6 @@ public class Trip {
     public void setTripNote(List<Note> tripNote) {
         this.tripNote = tripNote;
     }
+
 }
 

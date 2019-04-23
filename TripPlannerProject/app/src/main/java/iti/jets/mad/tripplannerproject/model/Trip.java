@@ -37,7 +37,7 @@ public class Trip {
     public String getDateTimeStamp() {
         Date date=new Date(timeStamp);
         SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
-        sdf2.setTimeZone(TimeZone.getTimeZone("UTC+2"));
+        sdf2.setTimeZone(TimeZone.getTimeZone("GMT+2"));
         String dateStr = sdf2.format(date);
         return dateStr;
     }
@@ -45,7 +45,7 @@ public class Trip {
     public String getTimeTimeStamp() {
         Date date=new Date(timeStamp);
         SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm:ss a");
-        sdf2.setTimeZone(TimeZone.getTimeZone("UTC+2"));
+        sdf2.setTimeZone(TimeZone.getTimeZone("GMT+2"));
         String timeStr = sdf2.format(date);
         return timeStr;
     }

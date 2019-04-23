@@ -3,7 +3,6 @@ package iti.jets.mad.tripplannerproject.screens.homescreen;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.se.omapi.Session;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -18,30 +17,24 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
 
 import iti.jets.mad.tripplannerproject.R;
 import iti.jets.mad.tripplannerproject.model.services.UserSharedPerferences;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.AddTripActivity;
-import iti.jets.mad.tripplannerproject.screens.homescreen.historyfragment.HistoryFragment;
+import iti.jets.mad.tripplannerproject.screens.homescreen.historyfragment.historyfragment.HistoryFragment;
+import iti.jets.mad.tripplannerproject.screens.homescreen.historyfragment.historyfragment.MapsActivity;
 import iti.jets.mad.tripplannerproject.screens.homescreen.homefragment.HomeFragment;
 import iti.jets.mad.tripplannerproject.screens.homescreen.profilefragment.ProfileFragment;
-import iti.jets.mad.tripplannerproject.screens.loginscreen.LoginActivity;
-import iti.jets.mad.tripplannerproject.screens.registerscreen.RegisterActivity;
 import iti.jets.mad.tripplannerproject.screens.splashscreen.SplashActivity;
 
 
 public class HomeActivity extends AppCompatActivity {
-    private MenuItem logoutitem;
+    private MenuItem logoutitem,historyMap;
     private FloatingActionButton floatingActionButton;
     private GoogleApiClient mGoogleApiClient;
     private static final String SETTING_INFOS = "User_Info";
@@ -59,6 +52,7 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu,menu);
         logoutitem=menu.findItem(R.id.LogoutToolBarID);
+        historyMap=menu.findItem(R.id.HistoryMapToolBarID);
 
         return true;
     }
@@ -131,6 +125,10 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 //startActivity(new Intent(this, RegisterActivity.class).putExtra("flag",true));
                 return true;
+            }
+            case R.id.HistoryMapToolBarID:{
+                Intent intent = new Intent(this, MapsActivity.class);
+                startActivity(intent);
             }
             default:
                 return super.onOptionsItemSelected(item);

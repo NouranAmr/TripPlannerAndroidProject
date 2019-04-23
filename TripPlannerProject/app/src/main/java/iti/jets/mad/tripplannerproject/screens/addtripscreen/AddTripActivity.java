@@ -57,12 +57,12 @@ import iti.jets.mad.tripplannerproject.screens.addtripscreen.datepicker.TimePick
 import iti.jets.mad.tripplannerproject.screens.homescreen.HomeActivity;
 
 
-public class AddTripActivity extends AppCompatActivity implements AddTripContract.IView  , TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+public class AddTripActivity extends AppCompatActivity implements AddTripContract.IView, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
 
     private AddTripContract.IPresnter presenter;
-    private ImageButton btnTime,btnDate;
-    private TextView timeTxt,dateTxt;
-    private boolean timeFlag,dateFlag=false;
+    private ImageButton btnTime, btnDate;
+    private TextView timeTxt, dateTxt;
+    private boolean timeFlag, dateFlag = false;
     private Calendar calendar;
     private Button addTripBtn, buttonAddNote;
     private TextInputEditText tripName;
@@ -70,7 +70,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private Switch aSwitch;
     private MenuItem logoutitem;
     private RecyclerView notesRecyclerView;
-    private Note note ;
+    private Note note;
     private EditText editTextNote;
     private EditText editTextTripName;
     private ArrayList<Note> notes;
@@ -83,20 +83,20 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private String currentUserUID;
     private String currentUserName;
     private FirebaseUser firebaseUser;
-    private TripLocation startLocation,endLocation;
+    private TripLocation startLocation, endLocation;
 
     private static final String TAG = "PlaceAutocomplete";
     private String userID;
 
     public AddTripActivity() {
         note = new Note();
-        notes=new ArrayList<>();
+        notes = new ArrayList<>();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu,menu);
-        logoutitem=menu.findItem(R.id.LogoutToolBarID);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        logoutitem = menu.findItem(R.id.LogoutToolBarID);
 
         return true;
     }
@@ -106,30 +106,30 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_trip);
-        Toolbar toolbar=findViewById(R.id.toolbarID);
+        Toolbar toolbar = findViewById(R.id.toolbarID);
         setSupportActionBar(toolbar);
 
-        tripName=findViewById(R.id.editTextTripName);
-        addTripBtn=findViewById(R.id.Button_OK);
+        tripName = findViewById(R.id.editTextTripName);
+        addTripBtn = findViewById(R.id.Button_OK);
 
         presenter = new AddTripPresenter(this);
-        calendar=Calendar.getInstance();
-        btnDate=findViewById(R.id.dateBtnID);
-        btnTime=findViewById(R.id.TimebtnID);
-        expendedCard=findViewById(R.id.expendedCard);
+        calendar = Calendar.getInstance();
+        btnDate = findViewById(R.id.dateBtnID);
+        btnTime = findViewById(R.id.TimebtnID);
+        expendedCard = findViewById(R.id.expendedCard);
         notesRecyclerView = findViewById(R.id.recyclerViewNots);
         notesRecyclerView.setLayoutManager(new LinearLayoutManager(AddTripActivity.this));
         editTextTripName = findViewById(R.id.editTextTripName);
         editTextNote = findViewById(R.id.editTextNote);
         buttonAddNote = findViewById(R.id.buttonAddNote);
         //get current user
-        firebaseUser =FirebaseAuth.getInstance().getCurrentUser();
-        userID=firebaseUser.getUid();
-        Log.e("currentUserUID",userID);
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        userID = firebaseUser.getUid();
+        Log.e("currentUserUID", userID);
         // database settings
 
-        mFirebaseDatabase=FirebaseDatabase.getInstance();
-        mDatabase=mFirebaseDatabase.getReference("Trips").child(userID);//get each user
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabase = mFirebaseDatabase.getReference("Trips").child(userID);//get each user
 
         editTextNote.setText("");
         note.setNoteTitle(editTextTripName.getText().toString());
@@ -148,10 +148,9 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             }
         });
 
-        buttonAddNote.setOnClickListener(v->{
-            if(!editTextNote.getText().toString().equals(""))
-            {
-                Note userNote= new Note(editTextNote.getText().toString());
+        buttonAddNote.setOnClickListener(v -> {
+            if (!editTextNote.getText().toString().equals("")) {
+                Note userNote = new Note(editTextNote.getText().toString());
                 notes.add(userNote);
                 editTextNote.setText("");
 
@@ -162,16 +161,16 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         btnTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment timeFragment=new TimePickerFragment();
-                timeFragment.show(getSupportFragmentManager(),"Time Picker");
+                DialogFragment timeFragment = new TimePickerFragment();
+                timeFragment.show(getSupportFragmentManager(), "Time Picker");
             }
         });
 
         btnDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment dateFragment=new DatePickerFragment();
-                dateFragment.show(getSupportFragmentManager(),"Date Picker");
+                DialogFragment dateFragment = new DatePickerFragment();
+                dateFragment.show(getSupportFragmentManager(), "Date Picker");
             }
         });
 
@@ -180,16 +179,14 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             @Override
             public void onClick(View v) {
 
-                if(timeFlag&&dateFlag==true)
+                if (timeFlag && dateFlag == true)
                     startAlarm(calendar);
 
-                saveTripToFireBaseDatabase(tripName.getText().toString(),startLocation,endLocation,calendar,notes);
-
+                saveTripToFireBaseDatabase(tripName.getText().toString(), startLocation, endLocation, calendar, notes);
 
 
             }
         });
-
 
 
         //mDatabase = mFirebaseDatabase.getReference().child("Trips").child(currentUserUID);
@@ -209,14 +206,13 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
     }
 
-    private void initPlaceAutocomplete(final int place_autocomplete_fragment)
-    {
+    private void initPlaceAutocomplete(final int place_autocomplete_fragment) {
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(place_autocomplete_fragment);
 
         autocompleteFragment.setCountry("EG");
         // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
 
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -224,27 +220,24 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             public void onPlaceSelected(Place place) {
                 // TODO: Get info about the selected place.
                 //Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-                if(place_autocomplete_fragment == R.id.place_autocomplete_fragment_from)
-                {
+                if (place_autocomplete_fragment == R.id.place_autocomplete_fragment_from) {
                     //start Point
 
-                    startLocation=new TripLocation();
+                    startLocation = new TripLocation();
                     startLocation.setPointName(place.getName());
                     startLocation.setLat(place.getLatLng().latitude);
                     startLocation.setLng(place.getLatLng().longitude);
 
-                }
-                else
-                {
+                } else {
                     //end Point
 
-                    endLocation=new TripLocation();
+                    endLocation = new TripLocation();
                     endLocation.setPointName(place.getName());
                     endLocation.setLat(place.getLatLng().latitude);
                     endLocation.setLng(place.getLatLng().longitude);
                 }
                 String placeName = place.getName();
-                LatLng latLng=place.getLatLng();
+                LatLng latLng = place.getLatLng();
                 Toast.makeText(AddTripActivity.this, placeName, Toast.LENGTH_SHORT).show();
             }
 
@@ -257,59 +250,61 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         });
 
     }
-    public void saveTripToFireBaseDatabase(String tripName, TripLocation startLocation, TripLocation endLocation, Calendar calendar , ArrayList<Note> tripNote) {
-        if (!(tripName.equals("")) && !(startLocation.equals(null)) && !(endLocation.equals(null)) && !(calendar.equals(null)) && !(tripNote.size()==0)) {
-            writeNewTrip(tripName,startLocation,endLocation,calendar,tripNote);
+
+    public void saveTripToFireBaseDatabase(String tripName, TripLocation startLocation, TripLocation endLocation, Calendar calendar, ArrayList<Note> tripNote) {
+        if (!(tripName.equals("")) && !(startLocation.equals(null)) && !(endLocation.equals(null)) && !(calendar.equals(null)) && !(tripNote.size() == 0)) {
+            writeNewTrip(tripName, startLocation, endLocation, calendar, tripNote);
             Toast.makeText(AddTripActivity.this, "Trip Saved", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(AddTripActivity.this, HomeActivity.class));
         }
     }
-    public void writeNewTrip(String tripName, TripLocation startLocation, TripLocation endLocation, Calendar calendar , ArrayList<Note> tripNote) {
+
+    public void writeNewTrip(String tripName, TripLocation startLocation, TripLocation endLocation, Calendar calendar, ArrayList<Note> tripNote) {
 
 
         try {
-            Trip trip=new Trip(tripName,startLocation,endLocation,calendar.getTimeInMillis(),tripNote);
+            Trip trip = new Trip(tripName, startLocation, endLocation, calendar.getTimeInMillis(), tripNote);
 
 
             mDatabase.child(mDatabase.push().getKey()).setValue(trip);
-        }catch (Exception e){
+        } catch (Exception e) {
             String m = e.getMessage();
         }
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        calendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
-        calendar.set(Calendar.MINUTE,minute);
-        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
 
-        timeFlag=true;
+        timeFlag = true;
 
 
-
-        String currentTime= DateFormat.getTimeInstance(DateFormat.SHORT).format(calendar.getTime());
-        timeTxt=findViewById(R.id.textView_Time);
+        String currentTime = DateFormat.getTimeInstance(DateFormat.SHORT).format(calendar.getTime());
+        timeTxt = findViewById(R.id.textView_Time);
         timeTxt.setText(currentTime);
     }
-    private void startAlarm(Calendar calendar) {
-        AlarmManager alarmManager =(AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        AlertReciever alertReciever= new AlertReciever();
-        Intent intent=new Intent(this,AlertReciever.class);
-        PendingIntent pendingIntent=PendingIntent.getBroadcast(this,1,intent,0);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
-        }
+    private void startAlarm(Calendar calendar) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReciever.class);
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
+
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-        dateFlag=true;
-        calendar.set(Calendar.YEAR,year);
-        calendar.set(Calendar.MONTH,month);
-        calendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-        String currentDate= DateFormat.getDateInstance().format(calendar.getTime());
-        dateTxt=findViewById(R.id.textView_Calender);
+        dateFlag = true;
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        String currentDate = DateFormat.getDateInstance().format(calendar.getTime());
+        dateTxt = findViewById(R.id.textView_Calender);
         dateTxt.setText(currentDate);
     }
 

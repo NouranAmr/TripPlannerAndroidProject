@@ -38,7 +38,9 @@
         <activity android:name=".screens.homescreen.HomeActivity" />
         <activity android:name=".screens.loginscreen.LoginActivity" />
         <activity android:name=".screens.registerscreen.RegisterActivity" />
+        <activity android:name=".screens.addtripscreen.alarmpackage.AlarmActivity"/>
         <activity android:name=".screens.splashscreen.SplashActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,6 +52,10 @@
             android:name=".model.services.FloatingService"
             android:enabled="true"
             android:exported="false"/>
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDWfuuXPaayWjdUpTv-kiQogKe65Y3qr8M"/>
+        <receiver android:name=".screens.addtripscreen.alarmbroadcast.AlertReciever" />
     </application>
 
 </manifest>

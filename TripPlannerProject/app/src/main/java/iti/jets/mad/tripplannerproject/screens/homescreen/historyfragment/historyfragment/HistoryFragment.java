@@ -1,4 +1,4 @@
-package iti.jets.mad.tripplannerproject.screens.homescreen.historyfragment;
+package iti.jets.mad.tripplannerproject.screens.homescreen.historyfragment.historyfragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,6 +36,7 @@ public class HistoryFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
 */
+
         return view;
     }
 

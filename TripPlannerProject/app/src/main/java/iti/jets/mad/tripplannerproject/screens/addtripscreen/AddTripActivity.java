@@ -243,7 +243,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
         /////place auto compleat/////
         // Initialize Places.
-        Places.initialize(getApplicationContext(), "AIzaSyDWfuuXPaayWjdUpTv-kiQogKe65Y3qr8M");
+        Places.initialize(getApplicationContext(), getResources().getString(R.string.google_maps_key));
         PlacesClient placesClient = Places.createClient(AddTripActivity.this);
 
         // from

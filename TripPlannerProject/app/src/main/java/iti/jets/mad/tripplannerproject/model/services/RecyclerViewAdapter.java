@@ -1,7 +1,10 @@
 package iti.jets.mad.tripplannerproject.model.services;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
@@ -32,7 +37,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public RecyclerViewAdapter(Context context,ArrayList<Trip>tripArrayList) {
 
         this.context = context;
+        //Activity a= (Activity) context;
         this.tripArrayList = tripArrayList;
+    }
+
+    public RecyclerViewAdapter(Context context) {
+
+        tripArrayList = new ArrayList<>();
+        this.context = context;
     }
 
     public void updateList(ArrayList<Trip>tripArrayList){
@@ -60,7 +72,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         });*/
 
-       if (tripArrayList.size()!=0){
+       if (tripArrayList.size()>0){
 
            viewHolder.tripImageCircularImageView.setVisibility(View.VISIBLE);
            viewHolder.tripNameTextView.setVisibility(View.VISIBLE);
@@ -71,6 +83,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
            viewHolder.tripImageCircularImageView.setImageResource(R.drawable.img);
            viewHolder.tripNameTextView.setText(tripArrayList.get(position).getTripName());
            viewHolder.fromTextView.append(tripArrayList.get(position).getStartLocation().getPointName());
+           viewHolder.toTextView.setText("To: ");
            viewHolder.toTextView.append(tripArrayList.get(position).getEndLocation().getPointName());
            viewHolder.dateTextView.append(tripArrayList.get(position).getDateTimeStamp() + "\n" + tripArrayList.get(position).getTimeTimeStamp());
            viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
@@ -84,6 +97,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                            switch (item.getItemId()) {
                                case R.id.startItem:
+                                   LatLng from = new LatLng(tripArrayList.get(position).getStartLocation().getLat(),tripArrayList.get(position).getStartLocation().getLng());
+                                   LatLng to = new LatLng(tripArrayList.get(position).getEndLocation().getLat(),tripArrayList.get(position).getEndLocation().getLng());
+
+                                   // from current location to
+                                   //String uri = String.format(Locale.ENGLISH,  "google.navigation:q=%f,%f",from.latitude, from.longitude);
+
+                                   //from loc1 to loc2
+                                   String uri = "http://maps.google.com/maps?saddr=" + from.latitude + "," + from.longitude + "&daddr=" + to.latitude + "," + to.longitude;
+
+                                   showMap(Uri.parse(uri));
                                    Toast.makeText(context, "Started", Toast.LENGTH_LONG).show();
                                    break;
                                case R.id.editButton:
@@ -139,6 +162,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
            viewHolder.toTextView.setText("No upcoming trips.");
        }
 
+    }
+
+    public void showMap(Uri geoLocation) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
+        intent.setPackage("com.google.android.apps.maps");
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
+        }
     }
 
     @Override

@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+    <item
+        android:id="@+id/HistoryMapToolBarID"
+        android:title="@string/historyMap"
+
+        />
     <item
         android:id="@+id/LogoutToolBarID"
         android:title="@string/Logout"

@@ -29,6 +29,9 @@ import java.util.ArrayList;
 
 import iti.jets.mad.tripplannerproject.R;
 import iti.jets.mad.tripplannerproject.model.Trip;
+
+import iti.jets.mad.tripplannerproject.screens.homescreen.homefragment.HomeFragmentContract;
+
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.AddTripActivity;
 
 
@@ -39,6 +42,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context context;
     private ArrayList<Trip>tripArrayList = null;
     public RecyclerViewAdapter(Context context) {
+
 
         this.context = context;
         //Activity a= (Activity) context;

@@ -26,15 +26,18 @@ import iti.jets.mad.tripplannerproject.model.Note;
 import iti.jets.mad.tripplannerproject.model.Trip;
 import iti.jets.mad.tripplannerproject.model.TripLocation;
 import iti.jets.mad.tripplannerproject.model.services.RecyclerViewAdapter;
+import iti.jets.mad.tripplannerproject.screens.homescreen.HomeActivity;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements HomeFragmentContract.IView{
 
+    private HomeFragmentContract.IPresnter presenter;
     private RecyclerViewAdapter recyclerViewAdapter;
     private RecyclerView recyclerView;
     private DatabaseReference databaseReference;
     private FirebaseUser firebaseUser;
     private FirebaseDatabase firebaseDatabase;
+    ArrayList<Trip> tripArrayList;
     private static int size = 0;
 
     @Nullable
@@ -42,6 +45,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_home,container,false);
         recyclerView= view.findViewById(R.id.recycleView);
+
         recyclerViewAdapter = new RecyclerViewAdapter(getContext());
         firebaseDatabase=FirebaseDatabase.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser(); //getcurrentuser
@@ -69,6 +73,7 @@ public class HomeFragment extends Fragment {
 
         return view;
     }
+
     public void fillTripList(DataSnapshot dataSnapshot) {
         ArrayList<Trip> tripArrayList = new ArrayList<>();
         Trip trip=null;
@@ -85,9 +90,15 @@ public class HomeFragment extends Fragment {
             tripArrayList.add(trip);
 
         }
+        HomeActivity homeActivity = (HomeActivity) getActivity();
+        homeActivity.reciveList(tripArrayList);
 
         recyclerViewAdapter.setList(tripArrayList);
         recyclerViewAdapter.notifyDataSetChanged();
 
+    }
+
+    public ArrayList<Trip> getTripArrayList() {
+        return tripArrayList;
     }
 }

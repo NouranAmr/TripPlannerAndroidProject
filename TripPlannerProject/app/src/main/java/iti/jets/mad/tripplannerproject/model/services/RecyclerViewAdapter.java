@@ -89,10 +89,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
            viewHolder.tripImageCircularImageView.setImageResource(R.drawable.img);
            viewHolder.tripNameTextView.setText(tripArrayList.get(position).getTripName());
-           viewHolder.fromTextView.append(tripArrayList.get(position).getStartLocation().getPointName());
-           viewHolder.toTextView.setText("To: ");
-           viewHolder.toTextView.append(tripArrayList.get(position).getEndLocation().getPointName());
-           viewHolder.dateTextView.append(tripArrayList.get(position).getDateTimeStamp() + "\n" + tripArrayList.get(position).getTimeTimeStamp());
+           viewHolder.fromTextView.setText("from: "+tripArrayList.get(position).getStartLocation().getPointName());
+           viewHolder.toTextView.setText("To: "+tripArrayList.get(position).getEndLocation().getPointName());
+
+           viewHolder.dateTextView.setText("Date :"+tripArrayList.get(position).getDateTimeStamp() + "\n" + tripArrayList.get(position).getTimeTimeStamp());
            viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View v) {

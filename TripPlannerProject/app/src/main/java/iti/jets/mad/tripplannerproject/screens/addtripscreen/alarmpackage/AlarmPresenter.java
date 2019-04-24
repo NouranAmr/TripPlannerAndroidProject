@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.support.v4.app.NotificationCompat;
 
 
+import iti.jets.mad.tripplannerproject.model.Trip;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.notification.NotificationHelper;
 
 public class AlarmPresenter implements AlarmContract.IPresenter {

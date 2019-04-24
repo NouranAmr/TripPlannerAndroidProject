@@ -13,6 +13,7 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import iti.jets.mad.tripplannerproject.R;
+import iti.jets.mad.tripplannerproject.model.Trip;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.alarmpackage.AlarmActivity;
 
 public class NotificationHelper extends ContextWrapper {
@@ -49,19 +50,18 @@ public class NotificationHelper extends ContextWrapper {
     }
 
 
-    public NotificationCompat.Builder getChannel1Notification (String title, String message){
+    public NotificationCompat.Builder getChannel1Notification (String title , String body){
         Intent intent=new Intent(context, AlarmActivity.class);
         long [] pattern={500 , 500};
         return new NotificationCompat.Builder(getApplicationContext(),chanel1ID)
                 .setContentTitle(title)
-                .setContentText(message)
+                .setContentText(body)
                 .setAutoCancel(false)
                 .setStyle(new NotificationCompat.BigTextStyle())
                 .setLights(Color.BLUE,500,500)
                 .setVibrate(pattern)
-                .setContentIntent(PendingIntent.getActivity(context,))
                 .setSmallIcon(R.drawable.ic_notifications_active_black_24dp)
-                .build();
+                .setContentIntent(PendingIntent.getActivity(context,1,intent,PendingIntent.FLAG_CANCEL_CURRENT));
     }
 
 }

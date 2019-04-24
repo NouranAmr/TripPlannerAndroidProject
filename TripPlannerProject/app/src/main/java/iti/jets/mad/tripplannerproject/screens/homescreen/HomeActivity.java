@@ -23,7 +23,10 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
+
 import iti.jets.mad.tripplannerproject.R;
+import iti.jets.mad.tripplannerproject.model.Trip;
 import iti.jets.mad.tripplannerproject.model.services.UserSharedPerferences;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.AddTripActivity;
 import iti.jets.mad.tripplannerproject.screens.homescreen.historyfragment.historyfragment.HistoryFragment;
@@ -41,6 +44,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final String SETTING_INFOS = "User_Info";
     private static final String EMAIL = "Email";
     private static final String PASSWORD = "PASSWORD";
+    private ArrayList<Trip>userTrips;
     private SharedPreferences settings;
     UserSharedPerferences sharedPref;
 
@@ -49,6 +53,10 @@ public class HomeActivity extends AppCompatActivity {
         sharedPref = UserSharedPerferences.getInstance();
     }
 
+    public void reciveList(ArrayList<Trip>trips)
+    {
+        userTrips = trips;
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu,menu);
@@ -132,7 +140,9 @@ public class HomeActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.HistoryMapToolBarID:{
+
                 Intent intent = new Intent(this, MapsActivity.class);
+                intent.putExtra("tripArray",userTrips);
                 startActivity(intent);
             }
             default:
@@ -154,6 +164,8 @@ public class HomeActivity extends AppCompatActivity {
                             fragmentTransaction=fragmentManager.beginTransaction();
                             fragmentTransaction.replace(R.id.fragment_container,selectedFragment);
                             fragmentTransaction.commit();
+                           // userTrips=((HomeFragment) selectedFragment).getTripArrayList();
+
                             break;
                         case R.id.nav_profile:
                             selectedFragment=new ProfileFragment();

@@ -29,6 +29,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -45,6 +46,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import iti.jets.mad.tripplannerproject.R;
@@ -74,16 +76,15 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private EditText editTextNote;
     private EditText editTextTripName;
     private ArrayList<Note> notes;
+    private String startPlace , endPlace;
     // The Entry point of the database
     private FirebaseDatabase mFirebaseDatabase;
     // [START declare_database_ref]
     private DatabaseReference mDatabase;
     // [END declare_database_ref]
-
-    private String currentUserUID;
-    private String currentUserName;
     private FirebaseUser firebaseUser;
     private TripLocation startLocation, endLocation;
+    private PlaceAutocompleteFragment startPlaceAutocompleteFragment,endPlaceAutocompleteFragment;
 
     private static final String TAG = "PlaceAutocomplete";
     private String userID;
@@ -122,6 +123,31 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         editTextTripName = findViewById(R.id.editTextTripName);
         editTextNote = findViewById(R.id.editTextNote);
         buttonAddNote = findViewById(R.id.buttonAddNote);
+        startPlaceAutocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment_from);
+        endPlaceAutocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment_to);
+
+        Intent intent=getIntent();
+        if(intent.hasExtra("editItem"))
+        {
+
+            Trip trip=intent.getParcelableExtra("trip");
+           // EditText etPlace = (EditText) startPlaceAutocompleteFragment.getView().findViewById(R.id.place_autocomplete_fragment_from);
+            //etPlace.setText(trip.getStartLocation().getPointName());
+            tripName.setText(trip.getTripName());
+           // startPlaceAutocompleteFragment.setText("Trip1");
+            //endPlaceAutocompleteFragment.setText("Trip 2");
+            calendar.setTimeInMillis(trip.getTimeStamp());
+           /* ArrayList<Note> oldNotes = (ArrayList<Note>) trip.getTripNote();
+            presenter.setNotes(oldNotes);*/
+          /*  ArrayList notes = new ArrayList<Note>();
+            List<Note> l=trip.getTripNote();
+            notes = (ArrayList)l;
+            NoteAdapter noteAdapter = new NoteAdapter(getApplicationContext(),notes);
+            notesRecyclerView.setAdapter(noteAdapter);*/
+
+        }
         //get current user
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         userID = firebaseUser.getUid();
@@ -150,7 +176,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
         buttonAddNote.setOnClickListener(v -> {
             if (!editTextNote.getText().toString().equals("")) {
-                Note userNote = new Note(editTextNote.getText().toString());
+                Note userNote=new Note();
+                userNote.setNoteTitle(editTextNote.getText().toString());
                 notes.add(userNote);
                 editTextNote.setText("");
 

@@ -167,13 +167,13 @@ public class HomeActivity extends AppCompatActivity {
                            // userTrips=((HomeFragment) selectedFragment).getTripArrayList();
 
                             break;
-                        case R.id.nav_profile:
-                            selectedFragment=new ProfileFragment();
-                            fragmentManager=getSupportFragmentManager();
-                            fragmentTransaction=fragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.fragment_container,selectedFragment);
-                            fragmentTransaction.commit();
-                            break;
+//                        case R.id.nav_profile:
+//                            selectedFragment=new ProfileFragment();
+//                            fragmentManager=getSupportFragmentManager();
+//                            fragmentTransaction=fragmentManager.beginTransaction();
+//                            fragmentTransaction.replace(R.id.fragment_container,selectedFragment);
+//                            fragmentTransaction.commit();
+//                            break;
                         case R.id.nav_history:
                             selectedFragment=new HistoryFragment();
                             break;

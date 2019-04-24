@@ -42,10 +42,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.zip.DataFormatException;
 
 import iti.jets.mad.tripplannerproject.R;
 import iti.jets.mad.tripplannerproject.model.Note;
@@ -316,9 +319,20 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
         try {
             Trip trip = new Trip(tripName, startLocation, endLocation, calendar.getTimeInMillis(), tripNote);
+            Date date = new Date();
+            String strDateFormat = "hh:mm:ss a";
+            String str2DateFormat="dd-MM-yyyy";
+            DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+            DateFormat dataFormat2= new SimpleDateFormat(str2DateFormat);
+            String formattedDate= dateFormat.format(date);
+            String formaatedTime= dataFormat2.format(date);
+            if((trip.getTimeTimeStamp().compareTo(formattedDate)) >=0   ||   (trip.getDateTimeStamp().compareTo(formaatedTime)) >=0)
+            {
+              //  System.out.println("Current time of the day using Date - 12 hour format: " + formattedDate);
+                mDatabase.child(mDatabase.push().getKey()).setValue(trip);
 
+            }
 
-            mDatabase.child(mDatabase.push().getKey()).setValue(trip);
         } catch (Exception e) {
             String m = e.getMessage();
         }

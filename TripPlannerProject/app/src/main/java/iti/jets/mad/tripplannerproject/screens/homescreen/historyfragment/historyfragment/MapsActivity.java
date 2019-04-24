@@ -36,6 +36,7 @@ import iti.jets.mad.tripplannerproject.model.Trip;
 import iti.jets.mad.tripplannerproject.model.TripLocation;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.AddTripActivity;
 import iti.jets.mad.tripplannerproject.screens.homescreen.HomeActivity;
+import iti.jets.mad.tripplannerproject.screens.homescreen.homefragment.HomeFragmentContract;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -46,6 +47,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private DatabaseReference databaseReference;
     private FirebaseUser firebaseUser;
     private FirebaseDatabase firebaseDatabase;
+
+    private HomeFragmentContract.IView iView;
 
     public  MapsActivity(){
         markerPoints = new ArrayList<>();
@@ -71,8 +74,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         ////read from firebase
 
-        tripArrayList = new ArrayList<>();
-
+        tripArrayList = iView.getTripArrayList();
+/*
         firebaseDatabase= FirebaseDatabase.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser(); //getcurrentuser
         String userID=firebaseUser.getUid();
@@ -89,28 +92,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
 
-        });
-
-        for(int i=0 ; i<tripArrayList.size() ; i++)
-        {
-
-            String markerColor = generateColor();
-            BitmapDescriptor marker = getMarkerIcon(markerColor);
-            LatLng fromLatLang = new LatLng(tripArrayList.get(i).getStartLocation().getLat(),tripArrayList.get(i).getStartLocation().getLng());
-            String fromTitle = tripArrayList.get(i).getStartLocation().getPointName();
-            mMap.addMarker(new MarkerOptions().position(fromLatLang).title(fromTitle).icon(marker));
-
-            LatLng toLatLang = new LatLng(tripArrayList.get(i).getEndLocation().getLat(),tripArrayList.get(i).getEndLocation().getLng());
-            String toTitle = tripArrayList.get(i).getEndLocation().getPointName();
-            mMap.addMarker(new MarkerOptions().position(toLatLang).title(toTitle).icon(marker));
-
-
-            Polyline line = mMap.addPolyline(new PolylineOptions()
-                    .add(fromLatLang, toLatLang)
-                    .width(5)
-                    .color(Color.parseColor(markerColor)));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(fromLatLang));
-        }
+        });*/
 
     }
 
@@ -146,6 +128,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
 
+        for(int i=0 ; i<tripArrayList.size() ; i++)
+        {
+
+            String markerColor = generateColor();
+            BitmapDescriptor marker = getMarkerIcon(markerColor);
+            LatLng fromLatLang = new LatLng(tripArrayList.get(i).getStartLocation().getLat(),tripArrayList.get(i).getStartLocation().getLng());
+            String fromTitle = tripArrayList.get(i).getStartLocation().getPointName();
+            mMap.addMarker(new MarkerOptions().position(fromLatLang).title(fromTitle).icon(marker));
+
+            LatLng toLatLang = new LatLng(tripArrayList.get(i).getEndLocation().getLat(),tripArrayList.get(i).getEndLocation().getLng());
+            String toTitle = tripArrayList.get(i).getEndLocation().getPointName();
+            mMap.addMarker(new MarkerOptions().position(toLatLang).title(toTitle).icon(marker));
+
+
+            Polyline line = mMap.addPolyline(new PolylineOptions()
+                    .add(fromLatLang, toLatLang)
+                    .width(5)
+                    .color(Color.parseColor(markerColor)));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(fromLatLang));
+        }
       /*  LatLng sydney = new LatLng(51.5, -0.1);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney").icon(marker));
 

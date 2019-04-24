@@ -28,13 +28,15 @@ import iti.jets.mad.tripplannerproject.model.TripLocation;
 import iti.jets.mad.tripplannerproject.model.services.RecyclerViewAdapter;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements HomeFragmentContract.IView{
 
+    private HomeFragmentContract.IPresnter presenter;
     private RecyclerViewAdapter recyclerViewAdapter;
     private RecyclerView recyclerView;
     private DatabaseReference databaseReference;
     private FirebaseUser firebaseUser;
     private FirebaseDatabase firebaseDatabase;
+    ArrayList<Trip> tripArrayList;
     private static int size = 0;
 
     @Nullable
@@ -44,6 +46,7 @@ public class HomeFragment extends Fragment {
         recyclerView= view.findViewById(R.id.recycleView);
         recyclerViewAdapter= new RecyclerViewAdapter(getContext(),new ArrayList<Trip>());
 
+        presenter = new HomeFragmentPresenterImpl(this);
         firebaseDatabase=FirebaseDatabase.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser(); //getcurrentuser
         String userID=firebaseUser.getUid();
@@ -71,7 +74,7 @@ public class HomeFragment extends Fragment {
         return view;
     }
     public void fillNoteList(DataSnapshot dataSnapshot) {
-        ArrayList<Trip> tripArrayList = new ArrayList<>();
+        tripArrayList = new ArrayList<>();
         Trip trip=null;
 
         for(DataSnapshot snapshot :dataSnapshot.getChildren())
@@ -87,7 +90,12 @@ public class HomeFragment extends Fragment {
         }
 
         recyclerViewAdapter.updateList(tripArrayList);
+
         recyclerViewAdapter.notifyDataSetChanged();
 
+    }
+
+    public ArrayList<Trip> getTripArrayList() {
+        return tripArrayList;
     }
 }

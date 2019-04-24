@@ -118,7 +118,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //mMap.addMarker(new MarkerOptions().position(toLatLang).title(toTitle).icon(marker));
 
 
-            drawRout(fromLatLang , toLatLang,markerColor,marker);
+            drawRout(fromLatLang , toLatLang,fromTitle,toTitle,markerColor,marker);
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(fromLatLang,8));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(toLatLang,8));
 
@@ -186,7 +186,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /////////////////////////////////////////////////////////////////////////////
-    private void drawRout(LatLng from , LatLng to , String markerColor ,BitmapDescriptor marker)
+    private void drawRout(LatLng from , LatLng to ,String fromTitle,String toTitle, String markerColor ,BitmapDescriptor marker)
     {
         DateTime now = new DateTime();
         com.google.maps.model.LatLng start = new com.google.maps.model.LatLng(from.latitude,from.longitude);
@@ -198,7 +198,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .destination(end).departureTime(now)
                     .await();
 
-            addMarkersToMap( result, marker ,mMap);
+            addMarkersToMap( result,fromTitle,toTitle, marker ,mMap);
             addPolyline(result,  mMap , markerColor);
 
         } catch (ApiException e) {
@@ -219,12 +219,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .setWriteTimeout(1, TimeUnit.SECONDS);
     }
 
-    private void addMarkersToMap( DirectionsResult results, BitmapDescriptor marker , GoogleMap mMap) {
-       // mMap.addMarker(new MarkerOptions().position(fromLatLang).title(fromTitle).icon(marker));
-       // mMap.addMarker(new MarkerOptions().position(toLatLang).title(toTitle).icon(marker));
+    private void addMarkersToMap( DirectionsResult results ,String fromTitle,String toTitle, BitmapDescriptor marker , GoogleMap mMap) {
+       // mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].startLocation.lat,results.routes[0].legs[0].startLocation.lng)).title(results.routes[0].legs[0].startAddress).icon(marker));
+       // mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].endLocation.lat,results.routes[0].legs[0].endLocation.lng)).title(results.routes[0].legs[0].startAddress).icon(marker).snippet(getEndLocationTitle(results)));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].startLocation.lat,results.routes[0].legs[0].startLocation.lng)).title(fromTitle).icon(marker));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].endLocation.lat,results.routes[0].legs[0].endLocation.lng)).title(toTitle).icon(marker).snippet(getEndLocationTitle(results)));
 
-        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].startLocation.lat,results.routes[0].legs[0].startLocation.lng)).title(results.routes[0].legs[0].startAddress).icon(marker));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].endLocation.lat,results.routes[0].legs[0].endLocation.lng)).title(results.routes[0].legs[0].startAddress).icon(marker).snippet(getEndLocationTitle(results)));
     }
 
     private String getEndLocationTitle(DirectionsResult results){

@@ -52,6 +52,7 @@ import iti.jets.mad.tripplannerproject.model.Note;
 import iti.jets.mad.tripplannerproject.model.Trip;
 import iti.jets.mad.tripplannerproject.model.TripLocation;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.alarmbroadcast.AlertReciever;
+import iti.jets.mad.tripplannerproject.screens.addtripscreen.alarmbroadcast.BroadCastAlert;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.datepicker.DatePickerFragment;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.datepicker.TimePickerFragment;
 import iti.jets.mad.tripplannerproject.screens.homescreen.HomeActivity;
@@ -91,6 +92,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private FirebaseUser firebaseUser;
     private TripLocation startLocation, endLocation;
 
+    Trip trip;
+
     private static final String TAG = "PlaceAutocomplete";
     private String userID;
 
@@ -113,6 +116,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_trip);
         Toolbar toolbar = findViewById(R.id.toolbarID);
+        toolbar.setTitle("New Trip");
         setSupportActionBar(toolbar);
 
         tripName = findViewById(R.id.editTextTripName);
@@ -215,8 +219,9 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             public void onClick(View v) {
 
                 if (timeFlag && dateFlag == true) {
-                    startAlarm(calendar);
+
                     saveTripToFireBaseDatabase(tripName.getText().toString(), startLocation, endLocation, calendar, notes);
+                    startAlarm(calendar);
                     timeFlag=false;
                     dateFlag=false;
                 }
@@ -225,8 +230,9 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
                 if(check1 && check2 == true)
                 {
-                    startAlarm(secondCalendar);
+
                     saveTripToFireBaseDatabase(tripName.getText().toString(), endLocation, startLocation,  secondCalendar, notes);
+                    startSecondAlarm(secondCalendar);
                     secondTripFlagDate=false;
                     secondTripFlagTime=false;
                     check1=false;
@@ -312,7 +318,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
 
         try {
-            Trip trip = new Trip(tripName, startLocation, endLocation, calendar.getTimeInMillis(), tripNote);
+            trip = new Trip(tripName, startLocation, endLocation, calendar.getTimeInMillis(), tripNote);
 
 
             mDatabase.child(mDatabase.push().getKey()).setValue(trip);
@@ -355,10 +361,18 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private void startAlarm(Calendar calendar) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReciever.class);
+        intent.putExtra("tripObject",trip);
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
 
 
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
+    private void startSecondAlarm(Calendar calendar) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, BroadCastAlert.class);
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 

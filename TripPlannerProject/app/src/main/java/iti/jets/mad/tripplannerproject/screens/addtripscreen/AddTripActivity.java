@@ -358,6 +358,10 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private void startAlarm(Calendar calendar) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReciever.class);
+        intent.putExtra("fromLat",startLocation.getLat());
+        intent.putExtra("fromLng",startLocation.getLng());
+        intent.putExtra("toLat",endLocation.getLat());
+        intent.putExtra("toLng",endLocation.getLng());
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
 
@@ -367,6 +371,10 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private void startSecondAlarm(Calendar calendar) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, BroadCastAlert.class);
+        intent.putExtra("fromLat",startLocation.getLat());
+        intent.putExtra("fromLng",startLocation.getLng());
+        intent.putExtra("toLat",endLocation.getLat());
+        intent.putExtra("toLng",endLocation.getLng());
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);

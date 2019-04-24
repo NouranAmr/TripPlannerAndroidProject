@@ -28,7 +28,9 @@ public class AlarmActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
 
+
         presenter=new AlarmPresenter(this);
+        presenter.setData(getIntent());
         setFinishOnTouchOutside(false);
 
         player=MediaPlayer.create(this, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));

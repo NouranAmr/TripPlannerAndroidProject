@@ -15,6 +15,10 @@ public class BroadCastAlert extends BroadcastReceiver {
 
         Intent intent1=new Intent(context, AlarmActivity.class);
         intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent1.putExtra("fromLat",intent.getDoubleExtra("fromLat",0));
+        intent1.putExtra("fromLng",intent.getDoubleExtra("fromLng",0));
+        intent1.putExtra("toLat",intent.getDoubleExtra("toLat",0));
+        intent1.putExtra("toLng",intent.getDoubleExtra("toLng",0));
         context.startActivity(intent1);
 
 

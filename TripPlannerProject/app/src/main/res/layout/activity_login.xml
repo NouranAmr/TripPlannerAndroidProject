@@ -39,6 +39,15 @@
                     android:padding="10dp"
                     android:src="@drawable/img_register"
                     android:tint="@color/white" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Login"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="wrap_content"

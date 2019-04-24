@@ -9,10 +9,6 @@ public class Note {
     public Note() {
     }
 
-    public Note(String noteTitle) {
-        this.noteTitle = noteTitle;
-        this.isDone=false;
-    }
 
     public String getNoteTitle() {
         return noteTitle;

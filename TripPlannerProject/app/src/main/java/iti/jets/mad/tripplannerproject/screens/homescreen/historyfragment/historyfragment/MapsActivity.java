@@ -25,10 +25,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.android.PolyUtil;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.TravelMode;
 
+import org.joda.time.DateTime;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import iti.jets.mad.tripplannerproject.R;
 import iti.jets.mad.tripplannerproject.model.Note;
@@ -44,19 +55,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ArrayList<TripLocation> markerPoints;
     private FloatingActionButton floatingActionButton;
     ArrayList<Trip> tripArrayList;
-    private DatabaseReference databaseReference;
-    private FirebaseUser firebaseUser;
-    private FirebaseDatabase firebaseDatabase;
 
-    private HomeFragmentContract.IView iView;
 
     public  MapsActivity(){
         markerPoints = new ArrayList<>();
+        tripArrayList = new ArrayList<>();
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        Intent intent=getIntent();
+        if(intent.hasExtra("tripArray"))
+        {
+            tripArrayList=intent.getParcelableArrayListExtra("tripArray");
+
+        }
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -72,45 +86,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        ////read from firebase
-
-        tripArrayList = iView.getTripArrayList();
-/*
-        firebaseDatabase= FirebaseDatabase.getInstance();
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser(); //getcurrentuser
-        String userID=firebaseUser.getUid();
-        databaseReference=firebaseDatabase.getReference("Trips").child(userID);
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                   fillDataList(dataSnapshot);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-
-        });*/
-
     }
 
-    public void fillDataList(DataSnapshot dataSnapshot) {
-        Trip trip=null;
-
-        for(DataSnapshot snapshot :dataSnapshot.getChildren())
-        {
-            TripLocation startLocation =snapshot.child("startLocation").getValue(TripLocation.class);
-            TripLocation endLocation = snapshot.child("endLocation").getValue(TripLocation.class);
-            long timeStamp= Long.valueOf(snapshot.child("timeStamp").getValue().toString());
-            String tripName=snapshot.child("tripName").getValue().toString();
-            List<Note> tripNote=(List<Note>) snapshot.child("tripNote").getValue();
-            trip=new Trip(tripName,startLocation,endLocation,timeStamp,tripNote);
-            tripArrayList.add(trip);
-            //arrayAdapter.add(dataSnapshot.getValue(Note.class));
-        }
-    }
 
 
     /**
@@ -127,7 +104,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap = googleMap;
 
-
         for(int i=0 ; i<tripArrayList.size() ; i++)
         {
 
@@ -135,18 +111,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             BitmapDescriptor marker = getMarkerIcon(markerColor);
             LatLng fromLatLang = new LatLng(tripArrayList.get(i).getStartLocation().getLat(),tripArrayList.get(i).getStartLocation().getLng());
             String fromTitle = tripArrayList.get(i).getStartLocation().getPointName();
-            mMap.addMarker(new MarkerOptions().position(fromLatLang).title(fromTitle).icon(marker));
+            //mMap.addMarker(new MarkerOptions().position(fromLatLang).title(fromTitle).icon(marker));
 
             LatLng toLatLang = new LatLng(tripArrayList.get(i).getEndLocation().getLat(),tripArrayList.get(i).getEndLocation().getLng());
             String toTitle = tripArrayList.get(i).getEndLocation().getPointName();
-            mMap.addMarker(new MarkerOptions().position(toLatLang).title(toTitle).icon(marker));
+            //mMap.addMarker(new MarkerOptions().position(toLatLang).title(toTitle).icon(marker));
 
 
+            drawRout(fromLatLang , toLatLang,markerColor,marker);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(fromLatLang,8));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(toLatLang,8));
+
+            /*
             Polyline line = mMap.addPolyline(new PolylineOptions()
                     .add(fromLatLang, toLatLang)
                     .width(5)
-                    .color(Color.parseColor(markerColor)));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(fromLatLang));
+                    .color(Color.parseColor(markerColor)));*/
+            //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(fromLatLang,8));
         }
       /*  LatLng sydney = new LatLng(51.5, -0.1);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney").icon(marker));
@@ -202,5 +183,55 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         float[] hsv = new float[3];
         Color.colorToHSV(Color.parseColor(color), hsv);
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+    private void drawRout(LatLng from , LatLng to , String markerColor ,BitmapDescriptor marker)
+    {
+        DateTime now = new DateTime();
+        com.google.maps.model.LatLng start = new com.google.maps.model.LatLng(from.latitude,from.longitude);
+        com.google.maps.model.LatLng end = new com.google.maps.model.LatLng(to.latitude,to.longitude);
+
+        try {
+            DirectionsResult result = DirectionsApi.newRequest(getGeoContext())
+                    .mode(TravelMode.DRIVING).origin(start)
+                    .destination(end).departureTime(now)
+                    .await();
+
+            addMarkersToMap( result, marker ,mMap);
+            addPolyline(result,  mMap , markerColor);
+
+        } catch (ApiException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+    private GeoApiContext getGeoContext() {
+        GeoApiContext geoApiContext = new GeoApiContext();
+        return geoApiContext.setQueryRateLimit(3)
+                .setApiKey(getString(R.string.google_api_key))
+                .setConnectTimeout(1, TimeUnit.SECONDS)
+                .setReadTimeout(1, TimeUnit.SECONDS)
+                .setWriteTimeout(1, TimeUnit.SECONDS);
+    }
+
+    private void addMarkersToMap( DirectionsResult results, BitmapDescriptor marker , GoogleMap mMap) {
+       // mMap.addMarker(new MarkerOptions().position(fromLatLang).title(fromTitle).icon(marker));
+       // mMap.addMarker(new MarkerOptions().position(toLatLang).title(toTitle).icon(marker));
+
+        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].startLocation.lat,results.routes[0].legs[0].startLocation.lng)).title(results.routes[0].legs[0].startAddress).icon(marker));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].endLocation.lat,results.routes[0].legs[0].endLocation.lng)).title(results.routes[0].legs[0].startAddress).icon(marker).snippet(getEndLocationTitle(results)));
+    }
+
+    private String getEndLocationTitle(DirectionsResult results){
+        return  "Time :"+ results.routes[0].legs[0].duration.humanReadable + " Distance :" + results.routes[0].legs[0].distance.humanReadable;
+    }
+    private void addPolyline(DirectionsResult results, GoogleMap mMap , String markerColor ) {
+        List<LatLng> decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.getEncodedPath());
+        mMap.addPolyline(new PolylineOptions().addAll(decodedPath).color(Color.parseColor(markerColor)));
     }
 }

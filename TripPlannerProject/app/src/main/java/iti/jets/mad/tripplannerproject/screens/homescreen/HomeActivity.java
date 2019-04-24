@@ -53,6 +53,10 @@ public class HomeActivity extends AppCompatActivity {
         sharedPref = UserSharedPerferences.getInstance();
     }
 
+    public void reciveList(ArrayList<Trip>trips)
+    {
+        userTrips = trips;
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu,menu);
@@ -137,7 +141,7 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.HistoryMapToolBarID:{
 
                 Intent intent = new Intent(this, MapsActivity.class);
-               // intent.putExtra
+                intent.putExtra("tripArray",userTrips);
                 startActivity(intent);
             }
             default:
@@ -159,7 +163,7 @@ public class HomeActivity extends AppCompatActivity {
                             fragmentTransaction=fragmentManager.beginTransaction();
                             fragmentTransaction.replace(R.id.fragment_container,selectedFragment);
                             fragmentTransaction.commit();
-                            userTrips=((HomeFragment) selectedFragment).getTripArrayList();
+                           // userTrips=((HomeFragment) selectedFragment).getTripArrayList();
 
                             break;
                         case R.id.nav_profile:

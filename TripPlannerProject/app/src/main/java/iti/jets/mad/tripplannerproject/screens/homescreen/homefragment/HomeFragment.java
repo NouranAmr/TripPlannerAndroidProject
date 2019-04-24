@@ -26,6 +26,7 @@ import iti.jets.mad.tripplannerproject.model.Note;
 import iti.jets.mad.tripplannerproject.model.Trip;
 import iti.jets.mad.tripplannerproject.model.TripLocation;
 import iti.jets.mad.tripplannerproject.model.services.RecyclerViewAdapter;
+import iti.jets.mad.tripplannerproject.screens.homescreen.HomeActivity;
 
 
 public class HomeFragment extends Fragment implements HomeFragmentContract.IView{
@@ -89,7 +90,8 @@ public class HomeFragment extends Fragment implements HomeFragmentContract.IView
             tripArrayList.add(trip);
 
         }
-
+        HomeActivity homeActivity = (HomeActivity) getActivity();
+        homeActivity.reciveList(tripArrayList);
 
         recyclerViewAdapter.setList(tripArrayList);
         recyclerViewAdapter.notifyDataSetChanged();

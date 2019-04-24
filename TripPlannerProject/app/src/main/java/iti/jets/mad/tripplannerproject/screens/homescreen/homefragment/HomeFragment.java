@@ -18,7 +18,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import iti.jets.mad.tripplannerproject.R;
@@ -80,6 +83,16 @@ public class HomeFragment extends Fragment implements HomeFragmentContract.IView
 
         for(DataSnapshot snapshot :dataSnapshot.getChildren()) {
 
+            Date date = new Date();
+            String strDateFormat = "hh:mm:ss a";
+            String str2DateFormat="dd-MM-yyyy";
+
+            DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+            DateFormat dataFormat2= new SimpleDateFormat(str2DateFormat);
+
+            String nowTime= dateFormat.format(date);
+            String nowDate= dataFormat2.format(date);
+
             TripLocation startLocation =snapshot.child("startLocation").getValue(TripLocation.class);
             TripLocation endLocation = snapshot.child("endLocation").getValue(TripLocation.class);
             long timeStamp= Long.valueOf(snapshot.child("timeStamp").getValue().toString());
@@ -87,11 +100,16 @@ public class HomeFragment extends Fragment implements HomeFragmentContract.IView
            // trip.setTripKey(snapshot.getKey());
             List<Note> tripNote=(List<Note>) snapshot.child("tripNote").getValue();
             trip=new Trip(tripName,startLocation,endLocation,timeStamp,tripNote);
-            tripArrayList.add(trip);
+            if(((trip.getDateTimeStamp().compareTo(nowDate)) >0)   || (  (trip.getTimeTimeStamp().compareTo(nowTime)) >0 &&
+                    ( (trip.getDateTimeStamp().compareTo(nowDate)) >0 || (trip.getDateTimeStamp().compareTo(nowDate)) ==0 )))
+            {
+                tripArrayList.add(trip);
+            }
+
 
         }
-        HomeActivity homeActivity = (HomeActivity) getActivity();
-        homeActivity.reciveList(tripArrayList);
+       /* HomeActivity homeActivity = (HomeActivity) getActivity();
+        homeActivity.reciveList(tripArrayList);*/
 
         recyclerViewAdapter.setList(tripArrayList);
         recyclerViewAdapter.notifyDataSetChanged();

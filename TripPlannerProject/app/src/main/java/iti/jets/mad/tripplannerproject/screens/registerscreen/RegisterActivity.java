@@ -121,25 +121,28 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
         googleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(Status status) {
-                                // ...
-                                Toast.makeText(getApplicationContext(),"Logged Out",Toast.LENGTH_SHORT).show();
-                            }
-                        });
+
                 GoogleSignInAccount alreadyloggedAccount = GoogleSignIn.getLastSignedInAccount(RegisterActivity.this);
                 if (alreadyloggedAccount != null) {
                     Toast.makeText(getApplicationContext(), "Already Logged In", Toast.LENGTH_SHORT).show();
-                   // onLoggedIn(alreadyloggedAccount);
+                    startActivity(new Intent(RegisterActivity.this,HomeActivity.class));
+                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                            new ResultCallback<Status>() {
+                                @Override
+                                public void onResult(Status status) {
+                                    // ...
+                                    //Toast.makeText(getApplicationContext(),"Logged Out",Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+
                 } else {
                     Log.d(TAG, "Not logged in");
+                    Intent signInIntent= googleTooken();
+                    startActivityForResult(signInIntent, RC_SIGN_IN);
                 }
 
 
-                Intent signInIntent= googleTooken();
-                startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
 
@@ -175,6 +178,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
+                startActivity(new Intent(RegisterActivity.this,HomeActivity.class));
             } catch (ApiException e) {
                 String message= e.getMessage();
                 Log.w(TAG, "Google sign in failed", e);

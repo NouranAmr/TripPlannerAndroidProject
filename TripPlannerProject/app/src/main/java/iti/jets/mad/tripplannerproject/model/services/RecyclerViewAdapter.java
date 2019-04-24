@@ -41,10 +41,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<String> myNames = new ArrayList<>();
     private Context context;
     private ArrayList<Trip>tripArrayList = null;
-    public RecyclerViewAdapter(Context context) {
+    private boolean flag;
+    public RecyclerViewAdapter(Context context,boolean flag) {
 
 
         this.context = context;
+        this.flag=flag;
         //Activity a= (Activity) context;
       /*  firebaseDatabase= FirebaseDatabase.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser(); //getcurrentuser
@@ -102,7 +104,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                @Override
                public void onClick(View v) {
                    PopupMenu popupMenu = new PopupMenu(context, viewHolder.editButton);
-                   popupMenu.inflate(R.menu.buttonmenuitems);
+                   if(flag==true) {
+                       popupMenu.inflate(R.menu.buttonmenuitems);
+                   }
+                   else if(flag==false)
+                   {
+                       popupMenu.inflate(R.menu.notesmenuitem);
+                   }
                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                        @Override
                        public boolean onMenuItemClick(MenuItem item) {

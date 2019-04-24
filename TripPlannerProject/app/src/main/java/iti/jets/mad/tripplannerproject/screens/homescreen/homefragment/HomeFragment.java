@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment implements HomeFragmentContract.IView
         View view=inflater.inflate(R.layout.fragment_home,container,false);
         recyclerView= view.findViewById(R.id.recycleView);
 
-        recyclerViewAdapter = new RecyclerViewAdapter(getContext());
+        recyclerViewAdapter = new RecyclerViewAdapter(getContext(),true);
         firebaseDatabase=FirebaseDatabase.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser(); //getcurrentuser
         String userID=firebaseUser.getUid();

@@ -54,7 +54,7 @@ public class HistoryFragment extends Fragment {
         View view=inflater.inflate(R.layout.fragment_home,container,false);
         recyclerView= view.findViewById(R.id.recycleView);
 
-        recyclerViewAdapter = new RecyclerViewAdapter(getContext());
+        recyclerViewAdapter = new RecyclerViewAdapter(getContext(),false);
         firebaseDatabase=FirebaseDatabase.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser(); //getcurrentuser
         String userID=firebaseUser.getUid();

@@ -119,7 +119,7 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(i);
 
                 // LoginManager.getInstance().logOut();
-                if(mGoogleApiClient!=null) {
+               /* if(mGoogleApiClient!=null) {
                     Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                             new ResultCallback<Status>() {
                                 @Override
@@ -135,7 +135,7 @@ public class HomeActivity extends AppCompatActivity {
                                 }
                             });
                     finish();
-                }
+                }*/
                 //startActivity(new Intent(this, RegisterActivity.class).putExtra("flag",true));
                 return true;
             }

@@ -44,9 +44,8 @@ public class HomeFragment extends Fragment implements HomeFragmentContract.IView
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_home,container,false);
         recyclerView= view.findViewById(R.id.recycleView);
-        recyclerViewAdapter= new RecyclerViewAdapter(getContext(),new ArrayList<Trip>());
 
-        presenter = new HomeFragmentPresenterImpl(this);
+        recyclerViewAdapter = new RecyclerViewAdapter(getContext());
         firebaseDatabase=FirebaseDatabase.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser(); //getcurrentuser
         String userID=firebaseUser.getUid();
@@ -55,7 +54,7 @@ public class HomeFragment extends Fragment implements HomeFragmentContract.IView
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                fillNoteList(dataSnapshot);
+                fillTripList(dataSnapshot);
 
             }
 
@@ -73,24 +72,26 @@ public class HomeFragment extends Fragment implements HomeFragmentContract.IView
 
         return view;
     }
-    public void fillNoteList(DataSnapshot dataSnapshot) {
-        tripArrayList = new ArrayList<>();
+
+    public void fillTripList(DataSnapshot dataSnapshot) {
+        ArrayList<Trip> tripArrayList = new ArrayList<>();
         Trip trip=null;
 
-        for(DataSnapshot snapshot :dataSnapshot.getChildren())
-        {
+        for(DataSnapshot snapshot :dataSnapshot.getChildren()) {
+
             TripLocation startLocation =snapshot.child("startLocation").getValue(TripLocation.class);
             TripLocation endLocation = snapshot.child("endLocation").getValue(TripLocation.class);
             long timeStamp= Long.valueOf(snapshot.child("timeStamp").getValue().toString());
             String tripName=snapshot.child("tripName").getValue().toString();
+           // trip.setTripKey(snapshot.getKey());
             List<Note> tripNote=(List<Note>) snapshot.child("tripNote").getValue();
             trip=new Trip(tripName,startLocation,endLocation,timeStamp,tripNote);
             tripArrayList.add(trip);
-            //arrayAdapter.add(dataSnapshot.getValue(Note.class));
+
         }
 
-        recyclerViewAdapter.updateList(tripArrayList);
 
+        recyclerViewAdapter.setList(tripArrayList);
         recyclerViewAdapter.notifyDataSetChanged();
 
     }

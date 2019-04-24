@@ -20,12 +20,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 import iti.jets.mad.tripplannerproject.R;
 import iti.jets.mad.tripplannerproject.model.Trip;
+
 import iti.jets.mad.tripplannerproject.screens.homescreen.homefragment.HomeFragmentContract;
+
+import iti.jets.mad.tripplannerproject.screens.addtripscreen.AddTripActivity;
 
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
@@ -33,18 +40,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<String> myImages = new ArrayList<>();
     private ArrayList<String> myNames = new ArrayList<>();
     private Context context;
-    private ArrayList<Trip>tripArrayList;
-    public RecyclerViewAdapter(Context context,ArrayList<Trip>tripArrayList) {
+    private ArrayList<Trip>tripArrayList = null;
+    public RecyclerViewAdapter(Context context) {
+
 
         this.context = context;
         //Activity a= (Activity) context;
-        this.tripArrayList = tripArrayList;
-    }
+      /*  firebaseDatabase= FirebaseDatabase.getInstance();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser(); //getcurrentuser
+        userID=firebaseUser.getUid();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabase = mFirebaseDatabase.getReference("Trips").child(userID);
+        */
 
-    public RecyclerViewAdapter(Context context) {
-
-        tripArrayList = new ArrayList<>();
-        this.context = context;
     }
 
     public void updateList(ArrayList<Trip>tripArrayList){
@@ -72,7 +80,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         });*/
 
-       if (tripArrayList.size()>0){
+       if (tripArrayList == null){
+
+       }
+       else if (tripArrayList.size()>0){
 
            viewHolder.tripImageCircularImageView.setVisibility(View.VISIBLE);
            viewHolder.tripNameTextView.setVisibility(View.VISIBLE);
@@ -109,9 +120,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                    showMap(Uri.parse(uri));
                                    Toast.makeText(context, "Started", Toast.LENGTH_LONG).show();
                                    break;
-                               case R.id.editButton:
+                               case R.id.editItem:
                                    //Delete item
-                                   Toast.makeText(context, "Edited", Toast.LENGTH_LONG).show();
+                                   Intent intent=new Intent(context, AddTripActivity.class);
+                                   intent.putExtra("trip",tripArrayList.get(position));
+                                   intent.putExtra("editItem",true);
+                                   context.startActivity(intent);
                                    break;
                                case R.id.deleteItem:
                                    //Delete item
@@ -120,6 +134,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                        public void onClick(DialogInterface dialog, int which) {
                                            switch (which) {
                                                case DialogInterface.BUTTON_POSITIVE:
+
+                                                  //  mDatabase.child(tripArrayList.get(position).getTripKey()).removeValue();
                                                    Toast.makeText(context, "delete", Toast.LENGTH_LONG).show();
                                                    break;
 
@@ -175,7 +191,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        if(tripArrayList.size()==0)
+
+        if (tripArrayList==null){
+            return 0;
+        }
+        else if (tripArrayList.size()==0)
             return 1;
         else
             return tripArrayList.size();
@@ -195,5 +215,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             dateTextView = itemView.findViewById(R.id.dateTextView);
             editButton = itemView.findViewById(R.id.editButton);
         }
+    }
+    public void setList(ArrayList<Trip>tripArrayList){
+        this.tripArrayList=tripArrayList;
     }
 }

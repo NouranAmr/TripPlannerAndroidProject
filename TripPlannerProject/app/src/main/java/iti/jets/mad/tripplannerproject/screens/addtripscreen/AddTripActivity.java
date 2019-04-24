@@ -29,6 +29,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -45,6 +46,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import iti.jets.mad.tripplannerproject.R;
@@ -63,7 +65,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private ImageButton btnTime, btnDate;
     private TextView timeTxt, dateTxt;
     private boolean timeFlag, dateFlag = false;
-    private Calendar calendar;
+    private boolean firstTripFlagTime,firstTripFlagDate ,secondTripFlagTime,secondTripFlagDate=false;
+    private Calendar calendar,secondCalendar;
     private Button addTripBtn, buttonAddNote;
     private TextInputEditText tripName;
     private View expendedCard;
@@ -74,16 +77,24 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private EditText editTextNote;
     private EditText editTextTripName;
     private ArrayList<Note> notes;
+    private String startPlace , endPlace;
     // The Entry point of the database
     private FirebaseDatabase mFirebaseDatabase;
     // [START declare_database_ref]
     private DatabaseReference mDatabase;
     // [END declare_database_ref]
 
+
+    private ImageButton timeBtn2,calendarBtn2;
+    private TextView timeTxt2,calendarTxt2;
+
+    private boolean check1,check2=false;
+
     private String currentUserUID;
     private String currentUserName;
     private FirebaseUser firebaseUser;
     private TripLocation startLocation, endLocation;
+    private PlaceAutocompleteFragment startPlaceAutocompleteFragment,endPlaceAutocompleteFragment;
 
     private static final String TAG = "PlaceAutocomplete";
     private String userID;
@@ -122,11 +133,42 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         editTextTripName = findViewById(R.id.editTextTripName);
         editTextNote = findViewById(R.id.editTextNote);
         buttonAddNote = findViewById(R.id.buttonAddNote);
+        startPlaceAutocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment_from);
+        endPlaceAutocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment_to);
+
+        Intent intent=getIntent();
+        if(intent.hasExtra("editItem"))
+        {
+
+            Trip trip=intent.getParcelableExtra("trip");
+           // EditText etPlace = (EditText) startPlaceAutocompleteFragment.getView().findViewById(R.id.place_autocomplete_fragment_from);
+            //etPlace.setText(trip.getStartLocation().getPointName());
+            tripName.setText(trip.getTripName());
+           // startPlaceAutocompleteFragment.setText("Trip1");
+            //endPlaceAutocompleteFragment.setText("Trip 2");
+            calendar.setTimeInMillis(trip.getTimeStamp());
+           /* ArrayList<Note> oldNotes = (ArrayList<Note>) trip.getTripNote();
+            presenter.setNotes(oldNotes);*/
+          /*  ArrayList notes = new ArrayList<Note>();
+            List<Note> l=trip.getTripNote();
+            notes = (ArrayList)l;
+            NoteAdapter noteAdapter = new NoteAdapter(getApplicationContext(),notes);
+            notesRecyclerView.setAdapter(noteAdapter);*/
+
+        }
         //get current user
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         userID = firebaseUser.getUid();
         Log.e("currentUserUID", userID);
         // database settings
+
+        timeBtn2=findViewById(R.id.TimebtnID2);
+        calendarBtn2=findViewById(R.id.dateBtnID2);
+        timeTxt2=findViewById(R.id.textView_Time2);
+        calendarTxt2=findViewById(R.id.textView_Calender2);
+
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabase = mFirebaseDatabase.getReference("Trips").child(userID);//get each user
@@ -140,6 +182,9 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 if (isChecked) {
                     // The toggle is enabled
                     expendedCard.setVisibility(View.VISIBLE);
+                    secondCalendar=Calendar.getInstance();
+
+
 
                 } else {
                     // The toggle is disabled
@@ -150,7 +195,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
         buttonAddNote.setOnClickListener(v -> {
             if (!editTextNote.getText().toString().equals("")) {
-                Note userNote = new Note(editTextNote.getText().toString());
+                Note userNote=new Note();
+                userNote.setNoteTitle(editTextNote.getText().toString());
                 notes.add(userNote);
                 editTextNote.setText("");
 
@@ -161,6 +207,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         btnTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                firstTripFlagTime=true;
                 DialogFragment timeFragment = new TimePickerFragment();
                 timeFragment.show(getSupportFragmentManager(), "Time Picker");
             }
@@ -169,6 +216,25 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         btnDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                firstTripFlagDate=true;
+                DialogFragment dateFragment = new DatePickerFragment();
+                dateFragment.show(getSupportFragmentManager(), "Date Picker");
+            }
+        });
+
+        timeBtn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                secondTripFlagTime=true;
+                DialogFragment timeFragment = new TimePickerFragment();
+                timeFragment.show(getSupportFragmentManager(), "Time Picker");
+
+            }
+        });
+        calendarBtn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                secondTripFlagDate=true;
                 DialogFragment dateFragment = new DatePickerFragment();
                 dateFragment.show(getSupportFragmentManager(), "Date Picker");
             }
@@ -179,12 +245,26 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             @Override
             public void onClick(View v) {
 
-                if (timeFlag && dateFlag == true)
+                if (timeFlag && dateFlag == true) {
                     startAlarm(calendar);
+                    saveTripToFireBaseDatabase(tripName.getText().toString(), startLocation, endLocation, calendar, notes);
+                    timeFlag=false;
+                    dateFlag=false;
+                }
 
-                saveTripToFireBaseDatabase(tripName.getText().toString(), startLocation, endLocation, calendar, notes);
 
 
+                if(check1 && check2 == true)
+                {
+                    startAlarm(secondCalendar);
+                    saveTripToFireBaseDatabase(tripName.getText().toString(), endLocation, startLocation,  secondCalendar, notes);
+                    secondTripFlagDate=false;
+                    secondTripFlagTime=false;
+                    check1=false;
+                    check2=false;
+                }
+
+                startActivity(new Intent(AddTripActivity.this, HomeActivity.class));
             }
         });
 
@@ -255,7 +335,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         if (!(tripName.equals("")) && !(startLocation.equals(null)) && !(endLocation.equals(null)) && !(calendar.equals(null)) && !(tripNote.size() == 0)) {
             writeNewTrip(tripName, startLocation, endLocation, calendar, tripNote);
             Toast.makeText(AddTripActivity.this, "Trip Saved", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(AddTripActivity.this, HomeActivity.class));
+
         }
     }
 
@@ -274,16 +354,33 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        calendar.set(Calendar.MINUTE, minute);
-        calendar.set(Calendar.SECOND, 0);
+        if(firstTripFlagTime){
+            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            calendar.set(Calendar.MINUTE, minute);
+            calendar.set(Calendar.SECOND, 0);
 
-        timeFlag = true;
+            timeFlag = true;
 
 
-        String currentTime = DateFormat.getTimeInstance(DateFormat.SHORT).format(calendar.getTime());
-        timeTxt = findViewById(R.id.textView_Time);
-        timeTxt.setText(currentTime);
+            String currentTime = DateFormat.getTimeInstance(DateFormat.SHORT).format(calendar.getTime());
+            timeTxt = findViewById(R.id.textView_Time);
+            timeTxt.setText(currentTime);
+            firstTripFlagTime=false;
+        }
+
+
+        if(secondTripFlagTime)
+        {
+            secondCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            secondCalendar.set(Calendar.MINUTE, minute);
+            secondCalendar.set(Calendar.SECOND, 0);
+            String currentTime2 = DateFormat.getTimeInstance(DateFormat.SHORT).format(secondCalendar.getTime());
+            timeTxt2.setText(currentTime2);
+
+            check1=true;
+            secondTripFlagTime=false;
+        }
+
     }
 
     private void startAlarm(Calendar calendar) {
@@ -298,14 +395,29 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        if(firstTripFlagDate)
+        {
+            dateFlag = true;
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            String currentDate = DateFormat.getDateInstance().format(calendar.getTime());
+            dateTxt = findViewById(R.id.textView_Calender);
+            dateTxt.setText(currentDate);
+            firstTripFlagDate=false;
+        }
 
-        dateFlag = true;
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String currentDate = DateFormat.getDateInstance().format(calendar.getTime());
-        dateTxt = findViewById(R.id.textView_Calender);
-        dateTxt.setText(currentDate);
+        if(secondTripFlagDate){
+
+            secondCalendar.set(Calendar.YEAR, year);
+            secondCalendar.set(Calendar.MONTH, month);
+            secondCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            String currentDate2 = DateFormat.getDateInstance().format(secondCalendar.getTime());
+            calendarTxt2.setText(currentDate2);
+            calendarTxt2.setText(currentDate2);
+            check2=true;
+            secondTripFlagDate=false;
+        }
     }
 
     @Override

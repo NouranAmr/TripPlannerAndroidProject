@@ -33,6 +33,7 @@ import iti.jets.mad.tripplannerproject.screens.homescreen.historyfragment.histor
 import iti.jets.mad.tripplannerproject.screens.homescreen.historyfragment.historyfragment.MapsActivity;
 import iti.jets.mad.tripplannerproject.screens.homescreen.homefragment.HomeFragment;
 import iti.jets.mad.tripplannerproject.screens.homescreen.profilefragment.ProfileFragment;
+import iti.jets.mad.tripplannerproject.screens.loginscreen.LoginActivity;
 import iti.jets.mad.tripplannerproject.screens.splashscreen.SplashActivity;
 
 
@@ -121,6 +122,9 @@ public class HomeActivity extends AppCompatActivity {
 
                                     //mGoogleApiClient.disconnect();
                                     Toast.makeText(getApplicationContext(), "Logged Out", Toast.LENGTH_SHORT).show();
+                                    UserSharedPerferences sharedPref;
+                                    sharedPref = UserSharedPerferences.getInstance();
+                                    sharedPref.saveISLogged_IN(HomeActivity.this, false);
                                     Intent i = new Intent(getApplicationContext(), SplashActivity.class);
                                     startActivity(i);
                                 }

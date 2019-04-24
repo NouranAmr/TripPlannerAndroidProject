@@ -28,7 +28,6 @@
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
 
-
         <activity
             android:name=".screens.homescreen.historyfragment.historyfragment.MapsActivity"
             android:label="@string/title_activity_maps"></activity>

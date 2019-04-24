@@ -73,6 +73,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         Toolbar toolbar=findViewById(R.id.toolbarID);
+        toolbar.setTitle("Travello");
         setSupportActionBar(toolbar);
 
         BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_navigation);

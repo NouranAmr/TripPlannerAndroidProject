@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.support.v4.app.NotificationCompat;
 
 
+import iti.jets.mad.tripplannerproject.model.Trip;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.notification.NotificationHelper;
 
 public class AlarmPresenter implements AlarmContract.IPresenter {
@@ -32,7 +33,7 @@ public class AlarmPresenter implements AlarmContract.IPresenter {
     public void snoozeTrip() {
 
         NotificationHelper notificationHelper=new NotificationHelper(alarmActivity.getApplicationContext());
-        NotificationCompat.Builder nb=notificationHelper.getChannel1Notification("Alert","From Background");
+        NotificationCompat.Builder nb=notificationHelper.getChannel1Notification("Your Trip Snoozed","Press To Restart The Trip..");
         notificationHelper.getManager().notify(1,nb.build());
 
     }

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import iti.jets.mad.tripplannerproject.R;
+import iti.jets.mad.tripplannerproject.model.Trip;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.alarmbroadcast.AlertReciever;
 
 
@@ -36,9 +37,9 @@ public class AlarmActivity extends AppCompatActivity {
         player.start();
         final int tripId=getIntent().getIntExtra("tripId",0);
         alertBuilder=new AlertDialog.Builder(this);
-        alertBuilder.setTitle("tripaya")
-                .setMessage("Do yo want to Start Trip ?")
-                .setPositiveButton("start",new DialogInterface.OnClickListener() {
+        alertBuilder.setTitle("Reminder")
+                .setMessage("Do You Want To Start Your Trip ?")
+                .setPositiveButton("Start",new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         player.stop();
@@ -48,16 +49,17 @@ public class AlarmActivity extends AppCompatActivity {
                         presenter.startTrip();
                         finish();
                     }
-                }).setNeutralButton("snooze", new DialogInterface.OnClickListener() {
+                }).setNeutralButton("Snooze", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 player.stop();
                 player.release();
 
                 //Presenter   snooze trip
+
                 presenter.snoozeTrip();
             }
-        }).setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 player.stop();

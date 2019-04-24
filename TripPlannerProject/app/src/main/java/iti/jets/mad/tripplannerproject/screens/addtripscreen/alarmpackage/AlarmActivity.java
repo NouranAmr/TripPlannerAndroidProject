@@ -60,6 +60,7 @@ public class AlarmActivity extends AppCompatActivity {
                 //Presenter   snooze trip
 
                 presenter.snoozeTrip();
+                finish();
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override

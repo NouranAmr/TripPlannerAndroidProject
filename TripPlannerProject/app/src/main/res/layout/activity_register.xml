@@ -216,32 +216,13 @@
                     android:textStyle="bold"
                     />
 
-                <com.google.android.gms.common.SignInButton
-                    android:id="@+id/googleBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/btn_signUp"
-                    android:fontFamily="sans-serif-medium"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginRight="30dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/loginBtn"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="20dp"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    ></com.google.android.gms.common.SignInButton>
 
 
                 <Button
                     android:id="@+id/loginBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/googleBtn"
+                    android:layout_below="@+id/btn_signUp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="15dp"

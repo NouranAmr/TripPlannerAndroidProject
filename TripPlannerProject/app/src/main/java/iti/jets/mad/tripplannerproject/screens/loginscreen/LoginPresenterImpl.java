@@ -3,12 +3,10 @@ package iti.jets.mad.tripplannerproject.screens.loginscreen;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import com.google.firebase.auth.FirebaseAuth;
 
 import iti.jets.mad.tripplannerproject.model.services.SignInWithFireBase;
 import iti.jets.mad.tripplannerproject.model.services.UserSharedPerferences;
 import iti.jets.mad.tripplannerproject.screens.homescreen.HomeActivity;
-import iti.jets.mad.tripplannerproject.screens.registerscreen.RegisterActivity;
 
 
 public class LoginPresenterImpl implements LoginContract.LoginPresenter {

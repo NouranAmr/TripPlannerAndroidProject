@@ -4,14 +4,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,11 +18,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import iti.jets.mad.tripplannerproject.R;
 import iti.jets.mad.tripplannerproject.model.Note;
@@ -87,43 +84,25 @@ public class HistoryFragment extends Fragment {
 
         for(DataSnapshot snapshot :dataSnapshot.getChildren()) {
 
-            Date date = new Date();
-            String strDateFormat = "hh:mm:ss a";
-            String str2DateFormat="dd-MM-yyyy";
-
-            DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
-            DateFormat dataFormat2= new SimpleDateFormat(str2DateFormat);
-
-            String nowTime= dateFormat.format(date);
-            String nowDate= dataFormat2.format(date);
-
             TripLocation startLocation =snapshot.child("startLocation").getValue(TripLocation.class);
             TripLocation endLocation = snapshot.child("endLocation").getValue(TripLocation.class);
             long timeStamp= Long.valueOf(snapshot.child("timeStamp").getValue().toString());
             String tripName=snapshot.child("tripName").getValue().toString();
-            List<Note> tripNote=(List<Note>) snapshot.child("tripNote").getValue();
+            ArrayList<Note> tripNote=(ArrayList<Note>) snapshot.child("tripNote").getValue();
             trip=new Trip(tripName,startLocation,endLocation,timeStamp,tripNote);
-                  /*
-            if (date1.compareTo(date2) > 0) {
-    Log.i("app", "Date1 is after Date2");
 
-} else if (date1.compareTo(date2) < 0) {
-    Log.i("app", "Date1 is before Date2");
+            boolean timeNowAfter = new Time(System.currentTimeMillis()).after(new Date(trip.getTimeStamp()));
+            boolean dateNowAfter = new Date().after(new Date(trip.getTimeStamp()));
 
-} else if (date1.compareTo(date2) == 0) {
-    Log.i("app", "Date1 is equal to Date2");
-}
-             */
+            if(dateNowAfter || timeNowAfter)  {
 
-            if(((trip.getDateTimeStamp().compareTo(nowDate)) <0)   || (  (trip.getTimeTimeStamp().compareTo(nowTime)) <0 &&
-                    ( (trip.getDateTimeStamp().compareTo(nowDate)) <0 || (trip.getDateTimeStamp().compareTo(nowDate)) ==0 )))
-            {
                 tripArrayList.add(trip);
+
             }
 
         }
         HomeActivity homeActivity = (HomeActivity) getActivity();
-        homeActivity.reciveList(tripArrayList);
+        homeActivity.receiveList(tripArrayList);
 
         recyclerViewAdapter.setList(tripArrayList);
         recyclerViewAdapter.notifyDataSetChanged();

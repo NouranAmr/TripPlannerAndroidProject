@@ -1,13 +1,8 @@
 package iti.jets.mad.tripplannerproject.model.services;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
-
-import iti.jets.mad.tripplannerproject.model.User;
-import iti.jets.mad.tripplannerproject.screens.homescreen.HomeActivity;
 
 public class UserSharedPerferences {
 
@@ -45,7 +40,7 @@ public class UserSharedPerferences {
             flag=false;
         return  flag;
     }*/
-   SharedPreferences sharepreferences;
+   private SharedPreferences sharepreferences;
 
     public static UserSharedPerferences instance = null;
 

@@ -13,7 +13,6 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import iti.jets.mad.tripplannerproject.R;
-import iti.jets.mad.tripplannerproject.model.Trip;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.alarmpackage.AlarmActivity;
 
 public class NotificationHelper extends ContextWrapper {

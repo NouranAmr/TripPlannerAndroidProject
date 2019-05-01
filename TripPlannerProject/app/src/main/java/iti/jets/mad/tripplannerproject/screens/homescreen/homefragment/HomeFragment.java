@@ -16,23 +16,23 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import iti.jets.mad.tripplannerproject.R;
 import iti.jets.mad.tripplannerproject.model.Note;
 import iti.jets.mad.tripplannerproject.model.Trip;
 import iti.jets.mad.tripplannerproject.model.TripLocation;
 import iti.jets.mad.tripplannerproject.model.services.RecyclerViewAdapter;
-import iti.jets.mad.tripplannerproject.screens.homescreen.HomeActivity;
 
 
-public class HomeFragment extends Fragment implements HomeFragmentContract.IView{
+public class HomeFragment extends Fragment implements HomeFragmentContract.IView {
 
     private HomeFragmentContract.IPresnter presenter;
     private RecyclerViewAdapter recyclerViewAdapter;
@@ -40,21 +40,22 @@ public class HomeFragment extends Fragment implements HomeFragmentContract.IView
     private DatabaseReference databaseReference;
     private FirebaseUser firebaseUser;
     private FirebaseDatabase firebaseDatabase;
-    ArrayList<Trip> tripArrayList;
+    private static ArrayList<Trip> tripArrayList, tripHistoryArrayList;
     private static int size = 0;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_home,container,false);
-        recyclerView= view.findViewById(R.id.recycleView);
-
-        recyclerViewAdapter = new RecyclerViewAdapter(getContext(),true);
-        firebaseDatabase=FirebaseDatabase.getInstance();
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        recyclerView = view.findViewById(R.id.recycleView);
+        tripArrayList = new ArrayList<>();
+        tripHistoryArrayList = new ArrayList<>();
+        recyclerViewAdapter = new RecyclerViewAdapter(getContext(), true);
+        firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser(); //getcurrentuser
-        String userID=firebaseUser.getUid();
-        databaseReference=firebaseDatabase.getReference("Trips").child(userID);
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        String userID = firebaseUser.getUid();
+        databaseReference = firebaseDatabase.getReference("Trips").child(userID);
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -73,43 +74,42 @@ public class HomeFragment extends Fragment implements HomeFragmentContract.IView
         recyclerView.setAdapter(recyclerViewAdapter);
 
 
-
         return view;
     }
 
-    public void fillTripList(DataSnapshot dataSnapshot) {
-        ArrayList<Trip> tripArrayList = new ArrayList<>();
-        Trip trip=null;
+    private void fillTripList(DataSnapshot dataSnapshot) {
 
-        for(DataSnapshot snapshot :dataSnapshot.getChildren()) {
 
-            Date date = new Date();
-            String strDateFormat = "hh:mm:ss a";
-            String str2DateFormat="dd-MM-yyyy";
+        Trip trip = null;
 
-            DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
-            DateFormat dataFormat2= new SimpleDateFormat(str2DateFormat);
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-            String nowTime= dateFormat.format(date);
-            String nowDate= dataFormat2.format(date);
-
-            TripLocation startLocation =snapshot.child("startLocation").getValue(TripLocation.class);
+            TripLocation startLocation = snapshot.child("startLocation").getValue(TripLocation.class);
             TripLocation endLocation = snapshot.child("endLocation").getValue(TripLocation.class);
-            long timeStamp= Long.valueOf(snapshot.child("timeStamp").getValue().toString());
-            String tripName=snapshot.child("tripName").getValue().toString();
-           // trip.setTripKey(snapshot.getKey());
-            List<Note> tripNote=(List<Note>) snapshot.child("tripNote").getValue();
-            trip=new Trip(tripName,startLocation,endLocation,timeStamp,tripNote);
-            if(((trip.getDateTimeStamp().compareTo(nowDate)) >0)   || (  (trip.getTimeTimeStamp().compareTo(nowTime)) >0 &&
-                    ( (trip.getDateTimeStamp().compareTo(nowDate)) >0 || (trip.getDateTimeStamp().compareTo(nowDate)) ==0 )))
-            {
+            long timeStamp = Long.valueOf(snapshot.child("timeStamp").getValue().toString());
+            String tripName = snapshot.child("tripName").getValue().toString();
+            // trip.setTripKey(snapshot.getKey());
+            GenericTypeIndicator<ArrayList<Note>> genericTypeIndicator = new GenericTypeIndicator<ArrayList<Note>>() {
+            };
+            ArrayList<Note> tripNote = snapshot.child("tripNote").getValue(genericTypeIndicator);
+
+            trip = new Trip(tripName, startLocation, endLocation, timeStamp, tripNote);
+            trip.setTripKey(snapshot.child("tripKey").getValue().toString());
+
+
+            boolean timeNowBefore = new Time(System.currentTimeMillis()).before(new Date(trip.getTimeStamp()));
+            boolean dateNowBefore = new Date().before(new Date(trip.getTimeStamp()));
+
+            if (dateNowBefore || timeNowBefore) {
+
                 tripArrayList.add(trip);
-            }
+
+            } else tripHistoryArrayList.add(trip);
 
 
         }
        /* HomeActivity homeActivity = (HomeActivity) getActivity();
-        homeActivity.reciveList(tripArrayList);*/
+        homeActivity.receiveList(tripArrayList);*/
 
         recyclerViewAdapter.setList(tripArrayList);
         recyclerViewAdapter.notifyDataSetChanged();
@@ -118,5 +118,9 @@ public class HomeFragment extends Fragment implements HomeFragmentContract.IView
 
     public ArrayList<Trip> getTripArrayList() {
         return tripArrayList;
+    }
+
+    public ArrayList<Trip> getTripHistoryArrayList() {
+        return tripHistoryArrayList;
     }
 }

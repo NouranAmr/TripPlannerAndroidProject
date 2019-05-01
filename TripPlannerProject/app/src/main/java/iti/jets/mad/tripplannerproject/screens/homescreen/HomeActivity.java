@@ -1,5 +1,7 @@
 package iti.jets.mad.tripplannerproject.screens.homescreen;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,12 +35,13 @@ import iti.jets.mad.tripplannerproject.screens.addtripscreen.AddTripActivity;
 import iti.jets.mad.tripplannerproject.screens.homescreen.historyfragment.historyfragment.HistoryFragment;
 import iti.jets.mad.tripplannerproject.screens.homescreen.historyfragment.historyfragment.MapsActivity;
 import iti.jets.mad.tripplannerproject.screens.homescreen.homefragment.HomeFragment;
-import iti.jets.mad.tripplannerproject.screens.homescreen.profilefragment.ProfileFragment;
 import iti.jets.mad.tripplannerproject.screens.loginscreen.LoginActivity;
+import iti.jets.mad.tripplannerproject.screens.registerscreen.RegisterActivity;
 import iti.jets.mad.tripplannerproject.screens.splashscreen.SplashActivity;
 
 
 public class HomeActivity extends AppCompatActivity {
+    private AlertDialog.Builder alertBuilder;
     private MenuItem logoutitem,historyMap;
     private FloatingActionButton floatingActionButton;
     private GoogleApiClient mGoogleApiClient;
@@ -46,14 +50,62 @@ public class HomeActivity extends AppCompatActivity {
     private static final String PASSWORD = "PASSWORD";
     private ArrayList<Trip>userTrips;
     private SharedPreferences settings;
-    UserSharedPerferences sharedPref;
+    private UserSharedPerferences sharedPref;
+    private static Fragment  selectedFragment=null;
 
     public HomeActivity() {
 
         sharedPref = UserSharedPerferences.getInstance();
     }
 
-    public void reciveList(ArrayList<Trip>trips)
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            onBackPressed();
+        }
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        alertBuilder=new AlertDialog.Builder(this);
+        alertBuilder.setTitle("Warning")
+                .setMessage("Do You Want To Logout ?")
+                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseAuth.getInstance().signOut();
+                        sharedPref.saveISLogged_IN(HomeActivity.this, false);
+                        Intent i=new Intent(getApplicationContext(), SplashActivity.class);
+                        startActivity(i);
+
+                        if(mGoogleApiClient!=null) {
+                            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                                    new ResultCallback<Status>() {
+                                        @Override
+                                        public void onResult(Status status) {
+
+                                            Toast.makeText(getApplicationContext(), "Logged Out", Toast.LENGTH_SHORT).show();
+                                            UserSharedPerferences sharedPref;
+                                            sharedPref = UserSharedPerferences.getInstance();
+                                            sharedPref.saveISLogged_IN(HomeActivity.this, false);
+                                            HomeActivity.super.onBackPressed();
+                                        }
+                                    });
+                        }
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        alertBuilder.show();
+    }
+
+    public void receiveList(ArrayList<Trip>trips)
     {
         userTrips = trips;
     }
@@ -119,7 +171,7 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(i);
 
                 // LoginManager.getInstance().logOut();
-               /* if(mGoogleApiClient!=null) {
+                if(mGoogleApiClient!=null) {
                     Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                             new ResultCallback<Status>() {
                                 @Override
@@ -130,18 +182,20 @@ public class HomeActivity extends AppCompatActivity {
                                     UserSharedPerferences sharedPref;
                                     sharedPref = UserSharedPerferences.getInstance();
                                     sharedPref.saveISLogged_IN(HomeActivity.this, false);
-                                    Intent i = new Intent(getApplicationContext(), SplashActivity.class);
+                                    Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                                     startActivity(i);
                                 }
                             });
                     finish();
-                }*/
+                }
                 //startActivity(new Intent(this, RegisterActivity.class).putExtra("flag",true));
                 return true;
             }
             case R.id.HistoryMapToolBarID:{
 
                 Intent intent = new Intent(this, MapsActivity.class);
+                HomeFragment homeFragment= new HomeFragment();
+                userTrips=homeFragment.getTripHistoryArrayList();
                 intent.putExtra("tripArray",userTrips);
                 startActivity(intent);
             }
@@ -153,7 +207,7 @@ public class HomeActivity extends AppCompatActivity {
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                    Fragment selectedFragment=null;
+
                     FragmentManager fragmentManager=null;
                     FragmentTransaction fragmentTransaction=null;
                     switch (menuItem.getItemId()){
@@ -164,18 +218,13 @@ public class HomeActivity extends AppCompatActivity {
                             fragmentTransaction=fragmentManager.beginTransaction();
                             fragmentTransaction.replace(R.id.fragment_container,selectedFragment);
                             fragmentTransaction.commit();
-                           // userTrips=((HomeFragment) selectedFragment).getTripArrayList();
 
                             break;
-//                        case R.id.nav_profile:
-//                            selectedFragment=new ProfileFragment();
-//                            fragmentManager=getSupportFragmentManager();
-//                            fragmentTransaction=fragmentManager.beginTransaction();
-//                            fragmentTransaction.replace(R.id.fragment_container,selectedFragment);
-//                            fragmentTransaction.commit();
-//                            break;
+
                         case R.id.nav_history:
+
                             selectedFragment=new HistoryFragment();
+
                             break;
                     }
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
@@ -185,4 +234,4 @@ public class HomeActivity extends AppCompatActivity {
             };
 
 
-    }
+}

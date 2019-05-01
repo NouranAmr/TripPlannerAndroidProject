@@ -31,6 +31,7 @@
         <activity android:name=".screens.loginscreen.LoginActivity" android:screenOrientation="portrait"/>
         <activity android:name=".screens.registerscreen.RegisterActivity" android:screenOrientation="portrait"/>
         <activity android:name=".screens.addtripscreen.alarmpackage.AlarmActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".screens.addtripscreen.floatingView" android:screenOrientation="portrait"/>
         <activity android:name=".screens.splashscreen.SplashActivity" android:screenOrientation="portrait">
 
             <intent-filter>

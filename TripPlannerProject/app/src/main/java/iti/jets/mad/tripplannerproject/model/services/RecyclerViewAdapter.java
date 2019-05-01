@@ -30,6 +30,7 @@ import iti.jets.mad.tripplannerproject.R;
 import iti.jets.mad.tripplannerproject.model.Trip;
 
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.AddTripActivity;
+import iti.jets.mad.tripplannerproject.screens.addtripscreen.floatingView;
 
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
@@ -126,8 +127,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                                     //from loc1 to loc2
                                     String uri = "http://maps.google.com/maps?saddr=" + from.latitude + "," + from.longitude + "&daddr=" + to.latitude + "," + to.longitude;
-
-                                    showMap(Uri.parse(uri));
+                                    Intent intentFloating=new Intent(context, floatingView.class);
+                                    intentFloating.putExtra("URI",uri);
+                                    intentFloating.putExtra("TripList",tripArrayList);
+                                    intentFloating.putExtra("tripIndex",position);
+                                    context.startActivity(intentFloating);
+                                    //showMap(Uri.parse(uri));
                                     Toast.makeText(context, "Started", Toast.LENGTH_LONG).show();
                                     break;
                                 case R.id.editItem:
@@ -191,14 +196,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     }
 
-    public void showMap(Uri geoLocation) {
+   /* public void showMap(Uri geoLocation) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(geoLocation);
         intent.setPackage("com.google.android.apps.maps");
         if (intent.resolveActivity(context.getPackageManager()) != null) {
             context.startActivity(intent);
         }
-    }
+    }*/
 
     @Override
     public int getItemCount() {

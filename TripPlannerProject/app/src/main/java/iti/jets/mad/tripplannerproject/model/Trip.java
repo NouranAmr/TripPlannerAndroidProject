@@ -3,36 +3,25 @@ package iti.jets.mad.tripplannerproject.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.security.Key;
-import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 
 public class Trip implements Parcelable {
 
     private String tripName;
-    long timeStamp;
-    private List<Note> tripNote;
+    private long timeStamp;
+    private ArrayList<Note> tripNote;
     private String markerColor;
 
-    public String getTripKey() {
-        return tripKey;
-    }
-
-    public void setTripKey(String tripKey) {
-        this.tripKey = tripKey;
-    }
 
     private String tripKey;
 
 
     private TripLocation startLocation, endLocation;
 
-    public Trip(String tripName, TripLocation startLocation, TripLocation endLocation, long timeStamp , List<Note> tripNote) {
+    public Trip(String tripName, TripLocation startLocation, TripLocation endLocation, long timeStamp , ArrayList<Note> tripNote) {
         this.tripName = tripName;
         this.startLocation = startLocation;
         this.endLocation = endLocation;
@@ -41,6 +30,14 @@ public class Trip implements Parcelable {
     }
 
     public Trip(){
+    }
+
+    public String getTripKey() {
+        return tripKey;
+    }
+
+    public void setTripKey(String tripKey) {
+        this.tripKey = tripKey;
     }
 
 
@@ -59,17 +56,16 @@ public class Trip implements Parcelable {
         Date date=new Date(timeStamp);
         SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
         sdf2.setTimeZone(TimeZone.getTimeZone("GMT+2"));
-        String dateStr = sdf2.format(date);
-        return dateStr;
+        return sdf2.format(date);
     }
 
     public String getTimeTimeStamp() {
         Date date=new Date(timeStamp);
-        SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm:ss a");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm a");
         sdf2.setTimeZone(TimeZone.getTimeZone("GMT+2"));
-        String timeStr = sdf2.format(date);
-        return timeStr;
+        return sdf2.format(date);
     }
+
 
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
@@ -104,11 +100,11 @@ public class Trip implements Parcelable {
         return tripName;
     }
 
-    public List<Note> getTripNote() {
+    public ArrayList<Note> getTripNote() {
         return tripNote;
     }
 
-    public void setTripNote(List<Note> tripNote) {
+    public void setTripNote(ArrayList<Note> tripNote) {
         this.tripNote = tripNote;
     }
 
@@ -121,8 +117,9 @@ public class Trip implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.tripName);
         dest.writeLong(this.timeStamp);
-        dest.writeList(this.tripNote);
+        dest.writeTypedList(this.tripNote);
         dest.writeString(this.markerColor);
+        dest.writeString(this.tripKey);
         dest.writeParcelable(this.startLocation, flags);
         dest.writeParcelable(this.endLocation, flags);
     }
@@ -130,14 +127,14 @@ public class Trip implements Parcelable {
     protected Trip(Parcel in) {
         this.tripName = in.readString();
         this.timeStamp = in.readLong();
-        this.tripNote = new ArrayList<Note>();
-        in.readList(this.tripNote, Note.class.getClassLoader());
+        this.tripNote = in.createTypedArrayList(Note.CREATOR);
         this.markerColor = in.readString();
+        this.tripKey = in.readString();
         this.startLocation = in.readParcelable(TripLocation.class.getClassLoader());
         this.endLocation = in.readParcelable(TripLocation.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<Trip> CREATOR = new Parcelable.Creator<Trip>() {
+    public static final Creator<Trip> CREATOR = new Creator<Trip>() {
         @Override
         public Trip createFromParcel(Parcel source) {
             return new Trip(source);

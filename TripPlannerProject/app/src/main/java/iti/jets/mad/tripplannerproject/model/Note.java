@@ -3,8 +3,6 @@ package iti.jets.mad.tripplannerproject.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-
 public class Note implements Parcelable {
     private String noteTitle;
     private boolean isDone;

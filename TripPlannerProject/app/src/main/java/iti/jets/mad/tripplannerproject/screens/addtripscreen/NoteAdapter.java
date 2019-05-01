@@ -2,13 +2,11 @@ package iti.jets.mad.tripplannerproject.screens.addtripscreen;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,7 +53,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
         myViewHolder.deleteNote.setOnClickListener(e->{
 
             // Remove the item on remove/button click
-           notesList.remove(i);
+            notesList.remove(i);
 
                 /*
                     public final void notifyItemRemoved (int position)

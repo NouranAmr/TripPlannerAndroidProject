@@ -1,7 +1,6 @@
 package iti.jets.mad.tripplannerproject.screens.addtripscreen;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import iti.jets.mad.tripplannerproject.model.Note;
 

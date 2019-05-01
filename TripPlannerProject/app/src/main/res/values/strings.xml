@@ -7,7 +7,7 @@
     <string name="Edit">Edit</string>
     <string name="Delete">Delete</string>
     <string name="Notes">Notes</string>
-    <string name="secondTrib">Second Trib</string>
+    <string name="secondTrip">Second Trip</string>
     <string name="title_activity_maps">Map</string>
     <string name="historyMap">History Map</string>
 </resources>

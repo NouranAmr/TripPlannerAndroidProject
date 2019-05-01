@@ -11,9 +11,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import iti.jets.mad.tripplannerproject.model.Trip;
-import iti.jets.mad.tripplannerproject.model.TripLocation;
-import iti.jets.mad.tripplannerproject.screens.addtripscreen.AddTripActivity;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.notification.NotificationHelper;
 
 public class AlarmPresenter implements AlarmContract.IPresenter {

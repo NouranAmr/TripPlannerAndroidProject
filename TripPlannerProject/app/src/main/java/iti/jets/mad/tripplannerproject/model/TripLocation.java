@@ -3,8 +3,6 @@ package iti.jets.mad.tripplannerproject.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.android.gms.maps.model.LatLng;
-
 public class TripLocation implements Parcelable {
     private String PointName;
     private double lat,lng;

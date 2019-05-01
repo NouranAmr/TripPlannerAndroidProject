@@ -3,7 +3,6 @@ package iti.jets.mad.tripplannerproject.screens.addtripscreen;
 import android.content.Context;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import iti.jets.mad.tripplannerproject.model.Note;
 

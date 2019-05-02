@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -129,11 +130,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                     String uri = "http://maps.google.com/maps?saddr=" + from.latitude + "," + from.longitude + "&daddr=" + to.latitude + "," + to.longitude;
                                     Intent intentFloating=new Intent(context, floatingView.class);
                                     intentFloating.putExtra("URI",uri);
-                                    intentFloating.putExtra("TripList",tripArrayList);
-                                    intentFloating.putExtra("tripIndex",position);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelable("tripBundle",tripArrayList.get(position));
+                                    intentFloating.putExtra("trip",bundle);
+                                    //intentFloating.putExtra("TripList",tripArrayList);
+                                    //intentFloating.putExtra("tripIndex",position);
                                     context.startActivity(intentFloating);
                                     //showMap(Uri.parse(uri));
-                                    Toast.makeText(context, "Started", Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(context, "Started", Toast.LENGTH_LONG).show();
                                     break;
                                 case R.id.editItem:
                                     //Delete item

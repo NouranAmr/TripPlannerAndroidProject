@@ -71,7 +71,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private Switch aSwitch;
     private MenuItem logoutitem;
     private RecyclerView notesRecyclerView;
-    private EditText editTextNote, editTextTripName;
+    private EditText editTextNote;
 
     // The Entry point of the database
     private FirebaseDatabase mFirebaseDatabase;
@@ -126,7 +126,6 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         btnTime = findViewById(R.id.TimebtnID);
         expendedCard = findViewById(R.id.expendedCard);
         notesRecyclerView = findViewById(R.id.recyclerViewNots);
-        editTextTripName = findViewById(R.id.editTextTripName);
         editTextNote = findViewById(R.id.editTextNote);
         buttonAddNote = findViewById(R.id.buttonAddNote);
         timeBtn2 = findViewById(R.id.TimebtnID2);
@@ -144,7 +143,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
         notesRecyclerView.setLayoutManager(new LinearLayoutManager(AddTripActivity.this));
         editTextNote.setText("");
-        note.setNoteTitle(editTextTripName.getText().toString());
+        note.setNoteTitle(tripName.getText().toString());
 
         aSwitch.setClickable(true);
         aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -390,10 +389,9 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private void startAlarm(Calendar calendar) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReciever.class);
-        intent.putExtra("fromLat", startLocation.getLat());
-        intent.putExtra("fromLng", startLocation.getLng());
-        intent.putExtra("toLat", endLocation.getLat());
-        intent.putExtra("toLng", endLocation.getLng());
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("tripBundle",new Trip(tripName.getText().toString(),  startLocation, endLocation, 0 , notes));
+        intent.putExtra("trip",bundle);
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
 
@@ -404,10 +402,9 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private void startSecondAlarm(Calendar calendar) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, BroadCastAlert.class);
-        intent.putExtra("fromLat", startLocation.getLat());
-        intent.putExtra("fromLng", startLocation.getLng());
-        intent.putExtra("toLat", endLocation.getLat());
-        intent.putExtra("toLng", endLocation.getLng());
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("tripBundle",new Trip(tripName.getText().toString(),  startLocation, endLocation, 0 , notes));
+        intent.putExtra("trip",bundle);
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);

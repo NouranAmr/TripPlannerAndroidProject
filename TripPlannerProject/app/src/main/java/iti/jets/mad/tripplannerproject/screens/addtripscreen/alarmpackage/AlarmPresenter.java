@@ -5,12 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+
+import iti.jets.mad.tripplannerproject.model.Note;
+import iti.jets.mad.tripplannerproject.model.Trip;
+import iti.jets.mad.tripplannerproject.screens.addtripscreen.floatingView;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.notification.NotificationHelper;
 
 public class AlarmPresenter implements AlarmContract.IPresenter {
@@ -19,6 +25,7 @@ public class AlarmPresenter implements AlarmContract.IPresenter {
     private MediaPlayer player;
     AlarmActivity alarmActivity;
     Intent intent;
+    Trip myTrip;
 
     public AlarmPresenter(AlarmActivity alarmActivity) {
         this.alarmActivity=alarmActivity;
@@ -29,14 +36,22 @@ public class AlarmPresenter implements AlarmContract.IPresenter {
     }
 
     @Override
+    public void setTrip(Trip trip) {
+        myTrip = trip;
+    }
+
+    @Override
     public void startAlarmRing() {
 
     }
 
     @Override
     public void startTrip() {
-        LatLng from = new LatLng(intent.getDoubleExtra("fromLat",0),intent.getDoubleExtra("fromLng",0));
-        LatLng to = new LatLng(intent.getDoubleExtra("toLat",0),intent.getDoubleExtra("toLat",0));
+        Bundle bundle = intent.getBundleExtra("trip");
+        Trip trip =bundle.getParcelable("tripBundle");
+        LatLng from = new LatLng(trip.getStartLocation().getLat(),trip.getStartLocation().getLng());
+        LatLng to = new LatLng(trip.getEndLocation().getLat(),trip.getEndLocation().getLng());
+       // ArrayList<Note> notes = intent.getParcelableArrayListExtra("Nots");
 
         // from current location to
         //String uri = String.format(Locale.ENGLISH,  "google.navigation:q=%f,%f",from.latitude, from.longitude);
@@ -44,17 +59,21 @@ public class AlarmPresenter implements AlarmContract.IPresenter {
         //from loc1 to loc2
         String uri = "http://maps.google.com/maps?saddr=" + from.latitude + "," + from.longitude + "&daddr=" + to.latitude + "," + to.longitude;
 
-        showMap(Uri.parse(uri));
-        Toast.makeText((Context) alarmActivity, "Started", Toast.LENGTH_LONG).show();
+        Intent intentFloating=new Intent(alarmActivity, floatingView.class);
+        intentFloating.putExtra("URI",uri);
+        intentFloating.putExtra("trip",bundle);
+        alarmActivity.startActivity(intentFloating);
+        //showMap(Uri.parse(uri));
+        //Toast.makeText((Context) alarmActivity, "Started", Toast.LENGTH_LONG).show();
     }
-    public void showMap(Uri geoLocation) {
+   /* public void showMap(Uri geoLocation) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(geoLocation);
         intent.setPackage("com.google.android.apps.maps");
         if (intent.resolveActivity(alarmActivity.getPackageManager()) != null) {
             alarmActivity.startActivity(intent);
         }
-    }
+    }*/
 
     @Override
     public void snoozeTrip() {

@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -31,14 +29,10 @@ import iti.jets.mad.tripplannerproject.model.Note;
 import iti.jets.mad.tripplannerproject.model.Trip;
 import iti.jets.mad.tripplannerproject.screens.homescreen.HomeActivity;
 
-/**
- * Created by Jaink on 26-07-2017.
- */
 
 public class FloatingService extends Service {
     private WindowManager mWindowManager;
     private View mFloatingView;
-    private ArrayList<Trip> tripArrayList = null;
     ArrayList<Note> notes;
     Handler handler;
     public FloatingService() {
@@ -102,6 +96,7 @@ public class FloatingService extends Service {
                 stopSelf();
             }
         });
+        //ad notes as check boxes
         final LinearLayout displayNote = (LinearLayout) mFloatingView.findViewById(R.id.displayNote);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.topMargin = 10;
@@ -126,53 +121,11 @@ public class FloatingService extends Service {
                         cb.setButtonTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
                         cb.setTextColor(getResources().getColor(R.color.colorPrimary));
                         cb.setChecked(pojo.isDone());
-                        // cb.setGravity(15);
                         displayNote.addView(cb,layoutParams);
                     }
                 }
             }
         };
-       /* //display typed message.
-        final LinearLayout displayNote = (LinearLayout) mFloatingView.findViewById(R.id.displayNote);
-
-       for (int i = 0 ; i<notes.size() ; i++)
-        {
-            CheckBox cb = new CheckBox(getApplicationContext());
-            cb.setText(notes.get(i).getNoteTitle());
-            cb.setTextSize(18);
-            cb.setTextColor(getResources().getColor(R.color.colorPrimary));
-            cb.setEnabled(notes.get(i).isDone());
-            //cb.setGravity(10);
-            displayNote.addView(cb);
-        }*/
-
-
-//        Intent intent = new Intent();
-//        intent.getExtras().get("Nots");
-//        ArrayList<Note> notes = intent.getParcelableArrayListExtra("Nots");
-
-
-//            for(int i=0 ; i<notes.size() ;i++)
-//            {
-//
-//            }
-      /*  // while floating view is expanded.
-        //type message.
-        final EditText typetext = (EditText) mFloatingView.findViewById(R.id.edittext);
-        // Request focus and show soft keyboard automatically
-
-
-
-        ImageView senttext = (ImageView ) mFloatingView.findViewById(R.id.sendText);
-        senttext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.e("float "," image send click");
-                displaytext.setText(typetext.getText().toString());
-                displaytext.setVisibility(View.VISIBLE);
-            }
-        });*/
-
 
         //Set the close button on expanded view
         ImageView closeButton = (ImageView) mFloatingView.findViewById(R.id.close_exp_button);
@@ -262,15 +215,18 @@ public class FloatingService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //notes = intent.getParcelableArrayListExtra("Nots");
-        tripArrayList = intent.getParcelableArrayListExtra("TripList");
-        int tripIndex = intent.getIntExtra("tripIndex",0);
-        notes = (ArrayList<Note>) tripArrayList.get(tripIndex).getTripNote();
-        Message msg = new Message();
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("Notes", notes);
-        msg.setData(bundle);
-        handler.sendMessage(msg);
+        if(intent.hasExtra("trip"))
+        {
+            Bundle bundleIntent = intent.getBundleExtra("trip");
+            Trip trip =bundleIntent.getParcelable("tripBundle");
+            notes = (ArrayList<Note>) trip.getTripNote();
+            Message msg = new Message();
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("Notes", notes);
+            msg.setData(bundle);
+            handler.sendMessage(msg);
+        }
+
         return super.onStartCommand(intent, flags, startId);
     }
 

@@ -2,11 +2,11 @@
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="?attr/actionBarSize"
     android:background="@color/colorPrimary"
     android:elevation="4dp"
-    android:theme="@style/Base.Theme.AppCompat.Light"
-    app:popupTheme="@style/Base.Theme.AppCompat.Light">
+    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,13 +14,13 @@
         android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/toobarPic"
             android:layout_width="50dp"
             android:layout_height="40dp"
-            android:id="@+id/toobarPic"
             android:layout_gravity="center|center_horizontal"
             android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_launcher_round"
-            android:textAlignment="center"/>
+            android:src="@drawable/ic_ringing"
+            android:textAlignment="center" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

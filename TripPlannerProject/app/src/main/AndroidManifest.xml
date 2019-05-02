@@ -8,9 +8,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_ringing"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_ringing"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
@@ -47,7 +47,7 @@
             android:exported="false"/>
 
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDWfuuXPaayWjdUpTv-kiQogKe65Y3qr8M"/>
+            android:value="@string/google_maps_key"/>
         <receiver android:name=".screens.addtripscreen.alarmbroadcast.AlertReciever" />
         <receiver android:name=".screens.addtripscreen.alarmbroadcast.BroadCastAlert" />
     </application>

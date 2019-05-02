@@ -15,7 +15,7 @@ import iti.jets.mad.tripplannerproject.model.services.FloatingService;
 
 public class floatingView extends AppCompatActivity {
     private static final int CODE_PERMISSION = 2084;
-    private ArrayList<Trip> tripArrayList = null;
+    private Trip trip;
     private Intent mainIntent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +41,12 @@ public class floatingView extends AppCompatActivity {
      */
     private void initializeView() {
         showMap(Uri.parse(mainIntent.getStringExtra("URI")));
-        tripArrayList = mainIntent.getParcelableArrayListExtra("TripList");
-        int tripIndex = (int) mainIntent.getIntExtra("tripIndex",0);
-        //Toast.makeText(this, tripArrayList.size(), Toast.LENGTH_LONG).show();
+        Bundle bundle = mainIntent.getBundleExtra("trip");
+        Trip trip =bundle.getParcelable("tripBundle");
         Intent serviceIntent =new Intent(floatingView.this, FloatingService.class);
-        serviceIntent.putExtra("TripList" , tripArrayList);
-        serviceIntent.putExtra("tripIndex" ,tripIndex);
+        serviceIntent.putExtra("trip",bundle);
         startService(serviceIntent);
+        Toast.makeText(floatingView.this, "Started", Toast.LENGTH_LONG).show();
         finish();
     }
 

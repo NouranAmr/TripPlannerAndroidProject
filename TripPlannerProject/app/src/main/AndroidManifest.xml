@@ -47,7 +47,7 @@
             android:exported="false"/>
 
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDWfuuXPaayWjdUpTv-kiQogKe65Y3qr8M"/>
+            android:value="@string/google_maps_key"/>
         <receiver android:name=".screens.addtripscreen.alarmbroadcast.AlertReciever" />
         <receiver android:name=".screens.addtripscreen.alarmbroadcast.BroadCastAlert" />
     </application>

@@ -88,7 +88,6 @@ public class HomeActivity extends AppCompatActivity {
                                             sharedPref = UserSharedPerferences.getInstance();
                                             sharedPref.saveISLogged_IN(HomeActivity.this, false);
                                             Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                             startActivity(intent);
                                         }
                                     });

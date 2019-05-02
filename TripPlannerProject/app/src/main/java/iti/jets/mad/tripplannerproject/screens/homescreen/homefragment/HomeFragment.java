@@ -89,8 +89,7 @@ public class HomeFragment extends Fragment implements HomeFragmentContract.IView
             long timeStamp = Long.valueOf(snapshot.child("timeStamp").getValue().toString());
             String tripName = snapshot.child("tripName").getValue().toString();
             // trip.setTripKey(snapshot.getKey());
-            GenericTypeIndicator<ArrayList<Note>> genericTypeIndicator = new GenericTypeIndicator<ArrayList<Note>>() {
-            };
+            GenericTypeIndicator<ArrayList<Note>> genericTypeIndicator = new GenericTypeIndicator<ArrayList<Note>>() {};
             ArrayList<Note> tripNote = snapshot.child("tripNote").getValue(genericTypeIndicator);
 
             trip = new Trip(tripName, startLocation, endLocation, timeStamp, tripNote);

@@ -3,6 +3,8 @@ package iti.jets.mad.tripplannerproject.model.services;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,12 +21,16 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import iti.jets.mad.tripplannerproject.R;
@@ -60,7 +66,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
     }
-
     public void updateList(ArrayList<Trip>tripArrayList){
         this.tripArrayList = tripArrayList;
     }
@@ -96,8 +101,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             viewHolder.fromTextView.setVisibility(View.VISIBLE);
             viewHolder.dateTextView.setVisibility(View.VISIBLE);
             viewHolder.editButton.setVisibility(View.VISIBLE);
+            //default image
+            viewHolder.tripImageCircularImageView.setImageResource(R.drawable.ic_globe_grid);
+            //load map image using retrofit glide
+            String photo_url_str ="https://maps.googleapis.com/maps/api/staticmap?";
+            photo_url_str+="&zoom=15";
+            photo_url_str+="&size=150x150";
+            photo_url_str+="&maptype=roadmap";
+            photo_url_str+="&markers=color:purple%7Clabel:G%7C"+tripArrayList.get(position).getEndLocation().getLat()+", "+tripArrayList.get(position).getEndLocation().getLng();
+            photo_url_str+="&key="+ context.getString(R.string.google_api_key);
+                Glide.with(context)
+                        .load(photo_url_str)
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(viewHolder.tripImageCircularImageView);
 
-            viewHolder.tripImageCircularImageView.setImageResource(R.drawable.img);
             viewHolder.tripNameTextView.setText(tripArrayList.get(position).getTripName());
             viewHolder.fromTextView.setText("from: "+tripArrayList.get(position).getStartLocation().getPointName());
             viewHolder.toTextView.setText("To: "+tripArrayList.get(position).getEndLocation().getPointName());
@@ -239,4 +257,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void setList(ArrayList<Trip>tripArrayList){
         this.tripArrayList=tripArrayList;
     }
+
+
 }

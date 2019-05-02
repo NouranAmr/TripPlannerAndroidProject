@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TripPlanner</string>
+    <string name="app_name">Travello</string>
     <string name="Logout">Logout</string>
     <string name="startPoint">Start Point</string>
     <string name="endPoint">End Point</string>

@@ -16,6 +16,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import iti.jets.mad.tripplannerproject.R;
 import iti.jets.mad.tripplannerproject.model.services.UserSharedPerferences;
@@ -48,20 +50,11 @@ public class SplashActivity extends AppCompatActivity {
 
                 UserSharedPerferences sharedPref;
                 sharedPref = UserSharedPerferences.getInstance();
-                GoogleSignInAccount alreadyloggedAccount = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
-                if (alreadyloggedAccount != null) {
-                    Toast.makeText(getApplicationContext(), "Already Logged In", Toast.LENGTH_SHORT).show();
-                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                            new ResultCallback<Status>() {
-                                @Override
-                                public void onResult(Status status) {
-                                    // ...
-                                    //Toast.makeText(getApplicationContext(),"Logged Out",Toast.LENGTH_SHORT).show();
+               // GoogleSignInAccount alreadyloggedAccount = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+                FirebaseUser firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
+                if (firebaseUser != null) {
+                    startActivity(new Intent(getApplicationContext(),HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
-                                    Log.w(TAG, "Logged In Google");
-                                    startActivity(new Intent(getApplicationContext(),HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                                }
-                            });
 
 
                 }

@@ -75,10 +75,7 @@ public class HomeActivity extends AppCompatActivity {
                 .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        FirebaseAuth.getInstance().signOut();
-                        sharedPref.saveISLogged_IN(HomeActivity.this, false);
-                        Intent i=new Intent(getApplicationContext(), SplashActivity.class);
-                        startActivity(i);
+
 
                         if(mGoogleApiClient!=null) {
                             Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
@@ -90,7 +87,9 @@ public class HomeActivity extends AppCompatActivity {
                                             UserSharedPerferences sharedPref;
                                             sharedPref = UserSharedPerferences.getInstance();
                                             sharedPref.saveISLogged_IN(HomeActivity.this, false);
-                                            HomeActivity.super.onBackPressed();
+                                            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(intent);
                                         }
                                     });
                         }

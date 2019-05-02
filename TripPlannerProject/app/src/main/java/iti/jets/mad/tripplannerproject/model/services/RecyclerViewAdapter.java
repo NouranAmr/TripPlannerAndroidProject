@@ -102,7 +102,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             viewHolder.dateTextView.setVisibility(View.VISIBLE);
             viewHolder.editButton.setVisibility(View.VISIBLE);
             //default image
-            viewHolder.tripImageCircularImageView.setImageResource(R.drawable.ic_globe_grid);
+           // viewHolder.tripImageCircularImageView.setImageResource(R.drawable.ic_globe_grid);
             //load map image using retrofit glide
             String photo_url_str ="https://maps.googleapis.com/maps/api/staticmap?";
             photo_url_str+="&zoom=15";
@@ -112,6 +112,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             photo_url_str+="&key="+ context.getString(R.string.google_api_key);
                 Glide.with(context)
                         .load(photo_url_str)
+                        .placeholder(R.drawable.ic_globe_grid)
+                        .error(R.drawable.ic_globe_grid)
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(viewHolder.tripImageCircularImageView);

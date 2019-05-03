@@ -1,5 +1,6 @@
 package iti.jets.mad.tripplannerproject.model.services;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,12 +10,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -32,6 +35,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import iti.jets.mad.tripplannerproject.R;
 import iti.jets.mad.tripplannerproject.model.Trip;
@@ -192,7 +196,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                     break;
                                 case R.id.noteItem:
                                     //Delete item
-                                    Toast.makeText(context, "notes", Toast.LENGTH_LONG).show();
+                                    Dialog notesHistoryDialog = new Dialog(context);
+                                    notesHistoryDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                    notesHistoryDialog.setContentView(R.layout.notes_details);
+
+                                    RecyclerView notesHistoryRecyclerView = notesHistoryDialog.findViewById(R.id.notesDetailsRecyclerView);
+
+                                    notesHistoryRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+                                    NoteDetailsAdapter noteDetailsAdapter = new NoteDetailsAdapter(context,tripArrayList.get(position).getTripNote());
+
+                                    notesHistoryRecyclerView.setAdapter(noteDetailsAdapter);
+                                    notesHistoryDialog.show();
+
                                     break;
 
 
@@ -259,6 +275,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void setList(ArrayList<Trip>tripArrayList){
         this.tripArrayList=tripArrayList;
     }
+
+
 
 
 }

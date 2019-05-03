@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Time;
@@ -88,7 +89,9 @@ public class HistoryFragment extends Fragment {
             TripLocation endLocation = snapshot.child("endLocation").getValue(TripLocation.class);
             long timeStamp= Long.valueOf(snapshot.child("timeStamp").getValue().toString());
             String tripName=snapshot.child("tripName").getValue().toString();
-            ArrayList<Note> tripNote=(ArrayList<Note>) snapshot.child("tripNote").getValue();
+            GenericTypeIndicator<ArrayList<Note>> genericTypeIndicator = new GenericTypeIndicator<ArrayList<Note>>() {
+            };
+            ArrayList<Note> tripNote = snapshot.child("tripNote").getValue(genericTypeIndicator);
             trip=new Trip(tripName,startLocation,endLocation,timeStamp,tripNote);
 
             boolean timeNowAfter = new Time(System.currentTimeMillis()).after(new Date(trip.getTimeStamp()));

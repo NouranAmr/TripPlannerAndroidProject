@@ -27,10 +27,6 @@ public class Note implements Parcelable {
         isDone = done;
     }
 
-    @Override
-    public String toString() {
-        return noteTitle;
-    }
 
     @Override
     public int describeContents() {

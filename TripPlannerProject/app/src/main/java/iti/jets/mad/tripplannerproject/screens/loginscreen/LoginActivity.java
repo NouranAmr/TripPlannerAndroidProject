@@ -66,6 +66,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
                 }
                 if (password.getText().toString().trim().isEmpty()) {
                     password.setError("please fill the password. ");
+                    
                 } else {
                     firebaseAuth.signInWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString())
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {

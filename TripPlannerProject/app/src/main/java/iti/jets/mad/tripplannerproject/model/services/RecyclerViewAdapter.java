@@ -116,17 +116,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             photo_url_str+="&key="+ context.getString(R.string.google_api_key);
                 Glide.with(context)
                         .load(photo_url_str)
-                        .placeholder(R.drawable.ic_globe_grid)
-                        .error(R.drawable.ic_globe_grid)
+                        .placeholder(R.drawable.ic_globe_grid)//this would be your default image (like default profile or logo etc). it would be loaded at initial time and it will replace with your loaded image once glide successfully load image using url.
+                        .error(R.drawable.ic_globe_grid)//in case of any glide exception or not able to download then this image will be appear . if you won't mention this error() then nothing to worry placeHolder image would be remain as it is.
+                        .diskCacheStrategy(DiskCacheStrategy.ALL) //using to load into cache then second time it will load fast.
                         .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(viewHolder.tripImageCircularImageView);
 
             viewHolder.tripNameTextView.setText(tripArrayList.get(position).getTripName());
-            viewHolder.fromTextView.setText("from: "+tripArrayList.get(position).getStartLocation().getPointName());
-            viewHolder.toTextView.setText("To: "+tripArrayList.get(position).getEndLocation().getPointName());
+            viewHolder.fromTextView.setText(tripArrayList.get(position).getStartLocation().getPointName());
+            viewHolder.toTextView.setText(tripArrayList.get(position).getEndLocation().getPointName());
 
-            viewHolder.dateTextView.setText("Date :"+tripArrayList.get(position).getDateTimeStamp() + "\n" + tripArrayList.get(position).getTimeTimeStamp());
+            viewHolder.dateTextView.setText(tripArrayList.get(position).getDateTimeStamp() + "\n" + tripArrayList.get(position).getTimeTimeStamp());
             viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -231,6 +231,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             viewHolder.dateTextView.setVisibility(View.INVISIBLE);
             viewHolder.editButton.setVisibility(View.INVISIBLE);
 
+            viewHolder.fromTextView2.setVisibility(View.INVISIBLE);
+            viewHolder.dateTextView2.setVisibility(View.INVISIBLE);
+            viewHolder.toTextView2.setVisibility(View.INVISIBLE);
             viewHolder.toTextView.setText("No upcoming trips.");
         }
 
@@ -260,7 +263,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public class  ViewHolder extends RecyclerView.ViewHolder{
 
         ImageView tripImageCircularImageView;
-        TextView tripNameTextView,fromTextView,toTextView,dateTextView;
+        TextView tripNameTextView,fromTextView,toTextView,dateTextView,fromTextView2,toTextView2,dateTextView2;
         Button editButton;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -269,6 +272,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             fromTextView=itemView.findViewById(R.id.fromTextView);
             toTextView = itemView.findViewById(R.id.toTextView);
             dateTextView = itemView.findViewById(R.id.dateTextView);
+            fromTextView2=itemView.findViewById(R.id.fromTextView2);
+            toTextView2 = itemView.findViewById(R.id.toTextView2);
+            dateTextView2 = itemView.findViewById(R.id.dateTextView2);
             editButton = itemView.findViewById(R.id.editButton);
         }
     }

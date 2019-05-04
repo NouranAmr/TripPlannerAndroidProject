@@ -234,7 +234,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             viewHolder.fromTextView2.setVisibility(View.INVISIBLE);
             viewHolder.dateTextView2.setVisibility(View.INVISIBLE);
             viewHolder.toTextView2.setVisibility(View.INVISIBLE);
-            viewHolder.toTextView.setText("No upcoming trips.");
+            viewHolder.toTextView.setText("No trips.");
         }
 
     }

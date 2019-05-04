@@ -116,10 +116,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             photo_url_str+="&key="+ context.getString(R.string.google_api_key);
                 Glide.with(context)
                         .load(photo_url_str)
-                        .placeholder(R.drawable.ic_globe_grid)
-                        .error(R.drawable.ic_globe_grid)
+                        .placeholder(R.drawable.ic_globe_grid)//this would be your default image (like default profile or logo etc). it would be loaded at initial time and it will replace with your loaded image once glide successfully load image using url.
+                        .error(R.drawable.ic_globe_grid)//in case of any glide exception or not able to download then this image will be appear . if you won't mention this error() then nothing to worry placeHolder image would be remain as it is.
+                        .diskCacheStrategy(DiskCacheStrategy.ALL) //using to load into cache then second time it will load fast.
                         .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(viewHolder.tripImageCircularImageView);
 
             viewHolder.tripNameTextView.setText(tripArrayList.get(position).getTripName());

@@ -28,11 +28,7 @@
             android:label="@string/title_activity_maps" android:screenOrientation="portrait"></activity>
         <activity android:name=".screens.addtripscreen.AddTripActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".screens.homescreen.HomeActivity" android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
         </activity>
         <activity android:name=".screens.loginscreen.LoginActivity" android:screenOrientation="portrait"/>
@@ -40,7 +36,11 @@
         <activity android:name=".screens.addtripscreen.alarmpackage.AlarmActivity" android:screenOrientation="portrait"/>
         <activity android:name=".screens.addtripscreen.floatingView" android:screenOrientation="portrait"/>
         <activity android:name=".screens.splashscreen.SplashActivity" android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
         </activity>
 

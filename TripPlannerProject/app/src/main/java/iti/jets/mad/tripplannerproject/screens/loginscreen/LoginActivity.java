@@ -61,27 +61,32 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
             @Override
             public void onClick(View v) {
                 //loginPresenter.login(email.getText().toString().trim(),password.getText().toString());
-                firebaseAuth.signInWithEmailAndPassword(email.getText().toString().trim(),password.getText().toString())
-                        .addOnCompleteListener( new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if(task.isSuccessful()) {
-                                    UserSharedPerferences sharedPref;
-                                    sharedPref = UserSharedPerferences.getInstance();
-                                    sharedPref.saveISLogged_IN(LoginActivity.this, true);
-                                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                if (email.getText().toString().trim().isEmpty()) {
+                    email.setError("please fill the email. ");
+                }
+                if (password.getText().toString().trim().isEmpty()) {
+                    password.setError("please fill the password. ");
+                } else {
+                    firebaseAuth.signInWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString())
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        UserSharedPerferences sharedPref;
+                                        sharedPref = UserSharedPerferences.getInstance();
+                                        sharedPref.saveISLogged_IN(LoginActivity.this, true);
+                                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
 
+                                    } else {
+
+                                        startActivity(new Intent(LoginActivity.this, LoginActivity.class));
+                                        clearTxt();
+
+                                    }
                                 }
-                                else
-                                {
+                            });
 
-                                    startActivity(new Intent(LoginActivity.this, LoginActivity.class));
-                                    clearTxt();
-
-                                }
-                            }
-                        });
-
+                }
             }
         });
 

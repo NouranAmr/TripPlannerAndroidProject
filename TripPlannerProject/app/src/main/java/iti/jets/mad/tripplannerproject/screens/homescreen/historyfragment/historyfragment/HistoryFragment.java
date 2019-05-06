@@ -92,8 +92,9 @@ public class HistoryFragment extends Fragment {
             GenericTypeIndicator<ArrayList<Note>> genericTypeIndicator = new GenericTypeIndicator<ArrayList<Note>>() {
             };
             ArrayList<Note> tripNote = snapshot.child("tripNote").getValue(genericTypeIndicator);
-            trip=new Trip(tripName,startLocation,endLocation,timeStamp,tripNote);
 
+            trip=new Trip(tripName,startLocation,endLocation,timeStamp,tripNote);
+            trip.setTripKey(snapshot.child("tripKey").getValue().toString());
             boolean timeNowAfter = new Time(System.currentTimeMillis()).after(new Date(trip.getTimeStamp()));
             boolean dateNowAfter = new Date().after(new Date(trip.getTimeStamp()));
 

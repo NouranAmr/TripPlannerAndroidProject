@@ -178,7 +178,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                         public void onClick(DialogInterface dialog, int which) {
                                             switch (which) {
                                                 case DialogInterface.BUTTON_POSITIVE:
-
+                                                    String keyy= tripArrayList.get(position).getTripKey();
                                                     mDatabase.child(tripArrayList.get(position).getTripKey()).setValue(null);
                                                     RecyclerViewAdapter.this.notifyDataSetChanged();
                                                     Toast.makeText(context, "Deleted", Toast.LENGTH_LONG).show();

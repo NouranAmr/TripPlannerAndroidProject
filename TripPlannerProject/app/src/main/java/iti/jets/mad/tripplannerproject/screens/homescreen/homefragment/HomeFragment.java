@@ -81,6 +81,8 @@ public class HomeFragment extends Fragment implements HomeFragmentContract.IView
 
 
         Trip trip = null;
+        tripArrayList = new ArrayList<>();
+        tripHistoryArrayList = new ArrayList<>();
 
         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 

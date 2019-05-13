@@ -48,7 +48,8 @@ public class HomeActivity extends AppCompatActivity {
     private static final String SETTING_INFOS = "User_Info";
     private static final String EMAIL = "Email";
     private static final String PASSWORD = "PASSWORD";
-    private ArrayList<Trip>userTrips;
+    private ArrayList<Trip>userTrips = new ArrayList<>();
+    private static HomeFragment homeFragment;
     private SharedPreferences settings;
     private UserSharedPerferences sharedPref;
     private static Fragment  selectedFragment=null;
@@ -134,13 +135,16 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(HomeActivity.this, AddTripActivity.class);
+                userTrips = homeFragment.getTripArrayList();
+                intent.putExtra("tripId",userTrips.size()-1);
                 startActivity(intent);
             }
         });
 
         if (savedInstanceState == null) {
+            homeFragment = new HomeFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new HomeFragment()).commit();
+                    homeFragment).commit();
         }
 
 

@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import iti.jets.mad.tripplannerproject.R;
+import iti.jets.mad.tripplannerproject.model.Trip;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.alarmbroadcast.AlertReciever;
 
 
@@ -21,13 +22,16 @@ public class AlarmActivity extends AppCompatActivity {
     private AlertDialog.Builder alertBuilder;
     private MediaPlayer player;
     AlarmPresenter presenter;
+    int tripId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
 
-
+        tripId = getIntent().getIntExtra("tripId",0);
         presenter=new AlarmPresenter(this);
+        Bundle bundle = getIntent().getBundleExtra("trip");
+        Trip trip =bundle.getParcelable("tripBundle");
         presenter.setData(getIntent());
         setFinishOnTouchOutside(false);
 
@@ -35,7 +39,6 @@ public class AlarmActivity extends AppCompatActivity {
         player.setLooping(true);
         player.setVolume(100.0f,100.0f);
         player.start();
-        final int tripId=getIntent().getIntExtra("tripId",0);
         alertBuilder=new AlertDialog.Builder(this);
         alertBuilder.setTitle("Reminder")
                 .setMessage("Do You Want To Start Your Trip ?")
@@ -77,7 +80,7 @@ public class AlarmActivity extends AppCompatActivity {
     private void cancelAlarm(){
         AlarmManager alarmManager =(AlarmManager)getSystemService(Context.ALARM_SERVICE);
         Intent intent=new Intent(this, AlertReciever.class);
-        PendingIntent pendingIntent=PendingIntent.getBroadcast(this,1,intent,0);
+        PendingIntent pendingIntent=PendingIntent.getBroadcast(this,tripId,intent,0);
 
         alarmManager.cancel(pendingIntent);
         Toast.makeText(AlarmActivity.this, "Alarm Canceled", Toast.LENGTH_SHORT).show();

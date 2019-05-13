@@ -1,9 +1,12 @@
 package iti.jets.mad.tripplannerproject.screens.addtripscreen.alarmpackage;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -14,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
+import iti.jets.mad.tripplannerproject.R;
 import iti.jets.mad.tripplannerproject.model.Note;
 import iti.jets.mad.tripplannerproject.model.Trip;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.floatingView;
@@ -26,13 +30,16 @@ public class AlarmPresenter implements AlarmContract.IPresenter {
     AlarmActivity alarmActivity;
     Intent intent;
     Trip myTrip;
+    int tripId;
 
     public AlarmPresenter(AlarmActivity alarmActivity) {
         this.alarmActivity=alarmActivity;
 
+
     }
     public void setData(Intent intent){
         this.intent=intent;
+        tripId = intent.getIntExtra("tripId",0);
     }
 
     @Override
@@ -51,7 +58,7 @@ public class AlarmPresenter implements AlarmContract.IPresenter {
         Trip trip =bundle.getParcelable("tripBundle");
         LatLng from = new LatLng(trip.getStartLocation().getLat(),trip.getStartLocation().getLng());
         LatLng to = new LatLng(trip.getEndLocation().getLat(),trip.getEndLocation().getLng());
-       // ArrayList<Note> notes = intent.getParcelableArrayListExtra("Nots");
+        // ArrayList<Note> notes = intent.getParcelableArrayListExtra("Nots");
 
         // from current location to
         //String uri = String.format(Locale.ENGLISH,  "google.navigation:q=%f,%f",from.latitude, from.longitude);
@@ -78,9 +85,13 @@ public class AlarmPresenter implements AlarmContract.IPresenter {
     @Override
     public void snoozeTrip() {
 
-        NotificationHelper notificationHelper=new NotificationHelper(alarmActivity.getApplicationContext());
-        NotificationCompat.Builder nb=notificationHelper.getChannel1Notification("Your Trip Snoozed","Press To Restart The Trip..");
-        notificationHelper.getManager().notify(1,nb.build());
+        Trip trip = intent.getBundleExtra("trip").getParcelable("tripBundle");
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        PendingIntent pendingIntent = PendingIntent.getActivity(alarmActivity.getApplicationContext(),tripId,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationHelper notificationHelper = new NotificationHelper(alarmActivity.getApplicationContext());
+        NotificationCompat.Builder builder = notificationHelper.getChannel1Notification(trip.getTripName()+" was Snoozed","Click here to restart.",pendingIntent,alarmSound);
+        NotificationManager notificationManager = (NotificationManager)alarmActivity.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(tripId,builder.build());
 
     }
 

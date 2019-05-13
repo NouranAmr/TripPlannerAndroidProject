@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
@@ -49,18 +50,24 @@ public class NotificationHelper extends ContextWrapper {
     }
 
 
-    public NotificationCompat.Builder getChannel1Notification (String title , String body){
-        Intent intent=new Intent(context, AlarmActivity.class);
+    public NotificationCompat.Builder getChannel1Notification (String title , String body, PendingIntent pendingIntent, Uri alarmSound){
         long [] pattern={500 , 500};
         return new NotificationCompat.Builder(getApplicationContext(),chanel1ID)
                 .setContentTitle(title)
                 .setContentText(body)
-                .setAutoCancel(false)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+                .setOngoing(true)
                 .setStyle(new NotificationCompat.BigTextStyle())
                 .setLights(Color.BLUE,500,500)
                 .setVibrate(pattern)
                 .setSmallIcon(R.drawable.ic_notifications_active_black_24dp)
-                .setContentIntent(PendingIntent.getActivity(context,1,intent,PendingIntent.FLAG_CANCEL_CURRENT));
+                .setSound(alarmSound)
+                .setContentIntent(pendingIntent);
+
+
+
     }
+
 
 }

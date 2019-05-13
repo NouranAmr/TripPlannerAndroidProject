@@ -50,7 +50,6 @@ import iti.jets.mad.tripplannerproject.model.Note;
 import iti.jets.mad.tripplannerproject.model.Trip;
 import iti.jets.mad.tripplannerproject.model.TripLocation;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.alarmbroadcast.AlertReciever;
-import iti.jets.mad.tripplannerproject.screens.addtripscreen.alarmbroadcast.BroadCastAlert;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.datepicker.DatePickerFragment;
 import iti.jets.mad.tripplannerproject.screens.addtripscreen.datepicker.TimePickerFragment;
 import iti.jets.mad.tripplannerproject.screens.homescreen.HomeActivity;
@@ -392,22 +391,25 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         Bundle bundle = new Bundle();
         bundle.putParcelable("tripBundle",new Trip(tripName.getText().toString(),  startLocation, endLocation, 0 , notes));
         intent.putExtra("trip",bundle);
+        intent.putExtra("tripId",getIntent().getIntExtra("tripId",0));
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, getIntent().getIntExtra("tripId",0), intent, 0);
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
     private void startSecondAlarm(Calendar calendar) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, BroadCastAlert.class);
+        Intent intent = new Intent(this, AlertReciever.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable("tripBundle",new Trip(tripName.getText().toString(),  startLocation, endLocation, 0 , notes));
+        bundle.putParcelable("tripBundle",new Trip(tripName.getText().toString()+" (Way back)",  startLocation, endLocation, 0 , notes));
         intent.putExtra("trip",bundle);
+        intent.putExtra("tripId",getIntent().getIntExtra("tripId",0)+1);
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, getIntent().getIntExtra("tripId",0)+1, intent, 0);
+
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+
     }
 
     @Override

@@ -24,8 +24,10 @@ public class AlertReciever extends BroadcastReceiver {
         Intent intent1=new Intent(context, AlarmActivity.class);
         intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Bundle bundle = intent.getBundleExtra("trip");
+
         //Trip trip =bundle.getParcelable("tripBundle");
         intent1.putExtra("trip",bundle);
+        intent1.putExtra("tripId",intent.getIntExtra("tripId",0));
         context.startActivity(intent1);
 
 

@@ -15,7 +15,39 @@
       },
       "oauth_client": [
         {
-          "client_id": "472418985877-h4o0qqrnun41ep0joai83f8hnhpo26ku.apps.googleusercontent.com",
+          "client_id": "472418985877-dkgh80t59oqibf5vfi1sjsvlprtlfctf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "iti.jets.mad.tripplannerproject",
+            "certificate_hash": "e57e92db20236050a28c594ed12cbe4d182c04f9"
+          }
+        },
+        {
+          "client_id": "472418985877-2fg1804cmoi6tdoaimnbep1ak3mb5qmh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "iti.jets.mad.tripplannerproject",
+            "certificate_hash": "da3b4ad1e4442138117da01da586a264b934b730"
+          }
+        },
+        {
+          "client_id": "472418985877-lk0o8q1sv437dpa9892i1cs56hl2l2dq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "iti.jets.mad.tripplannerproject",
+            "certificate_hash": "c57975de0df5ee1b32c9f8944a11595862eb0626"
+          }
+        },
+        {
+          "client_id": "472418985877-m5sr0ttvfaluigmep033bsj0oi83dvgq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "iti.jets.mad.tripplannerproject",
+            "certificate_hash": "b2008cb3e55c97bb8c1be30eee695cffebec9e1c"
+          }
+        },
+        {
+          "client_id": "472418985877-jpr7k8v2n3pjrp77fheu02v1nrcu0p3g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "iti.jets.mad.tripplannerproject",

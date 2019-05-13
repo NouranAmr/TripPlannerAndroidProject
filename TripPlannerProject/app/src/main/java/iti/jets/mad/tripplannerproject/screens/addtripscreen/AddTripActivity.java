@@ -275,7 +275,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(place_autocomplete_fragment);
 
-        autocompleteFragment.setCountry("EG");
+       // autocompleteFragment.setCountry("EG");
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
         if (getIntent().hasExtra("editItem")) {
